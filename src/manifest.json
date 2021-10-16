@@ -1,6 +1,17 @@
 {
-  "name": "TODO PLUGIN",
+  "name": "Applitools Plugin",
+  "id": "1011412324421890620",
   "api": "1.0.0",
-  "main": "main.js",
-  "id": "TODO GET A PLUGIN ID"
+  "main": "plugin.js",
+  "ui": "ui.html",
+  "menu": [
+    {
+      "name": "Settings",
+      "command": "settings"
+    },
+    {
+      "name": "Run Visual Tests",
+      "command": "validate"
+    }
+  ]
 }
