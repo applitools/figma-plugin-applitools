@@ -3,11 +3,11 @@ import { debug } from "console"
 const { children } = figma.currentPage
 let results = { designs: []}
 
-figma.ui.onmessage = async ( msg) => {
+figma.ui.onmessage = async (msg) => {
   switch (msg.type) {
     case 'SAVE':
       figma.notify("Getting Designs")
-      getDesigns()
+      getDesigns(msg.everything)
       break
     case 'CANCEL':
       figma.closePlugin()

@@ -2,7 +2,9 @@ console.log("UI")
 document.getElementById('save').onclick = () => {
   console.log("****save******")
   if ((<HTMLInputElement>document.getElementById('key')).value.length > 0 && (<HTMLInputElement>document.getElementById('url')).value.length > 0) {
-    parent.postMessage({ pluginMessage: { type: 'SAVE' } }, '*')
+    var everything = (<HTMLInputElement>document.getElementById('everything')).checked;
+    debugger;
+    parent.postMessage({ pluginMessage: { type: 'SAVE', everything: everything } }, '*')
   }
   else {
     parent.postMessage({ pluginMessage: { type: 'KEY_OR_URL_ERROR' } }, '*')
