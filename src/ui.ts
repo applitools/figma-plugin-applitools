@@ -38,9 +38,11 @@ async function upload(results) {
   return await Promise.allSettled(
       results.designs.map(async (design) => {
         let testResults
+
         const eyes = new Eyes()
         try {
             eyes.setConfiguration(configuration);
+            eyes.setBaselineEnvName(`${design.name}`)
             await eyes.open('Figma App', design.name + ' ' + design.id, { width: design.width, height: design.height });
             await eyes.check(design.name + ' ' + design.id, Target.image(Buffer.from(design.bytes)));
 

@@ -1,4 +1,7 @@
+import { debug } from "console"
+
 const { children } = figma.currentPage
+let results = { designs: []}
 
 figma.ui.onmessage = async ( msg) => {
   switch (msg.type) {
@@ -19,22 +22,33 @@ figma.ui.onmessage = async ( msg) => {
   }
 }
 
-async function getDesigns() {
-  let results = { designs: []}
+async function collectDesigns(node) {
+  //let results = { designs: []}
   const exportSettings: ExportSettingsImage = { format: "PNG", suffix: '', constraint: { type: "SCALE", value: 1 }, contentsOnly: true }
-  
-  // might need to filter out certain types
+
+  const { id, name, width, height} = node
+  const bytes = await node.exportAsync(exportSettings)
+  results.designs.push({
+    id,
+    name,
+    width,
+    height,
+    bytes,
+  })
+}
+
+async function getDesigns(everything=false) {
   for (let node of children) {
-    const { id, name, width, height} = node
-    const bytes = await node.exportAsync(exportSettings)
-    results.designs.push({
-      id,
-      name,
-      width,
-      height,
-      bytes,
-    })
+
+    if(everything) {
+      await collectDesigns(node)
+    } else {
+      if (node.constructor.name == "FrameNode") {
+        await collectDesigns(node)
+      }
+    }
   }
+
   figma.notify("Uploading Designs to Applitools")
   figma.ui.postMessage({ results })
 }
