@@ -27,12 +27,16 @@ onmessage = event => {
       let statusCounter = {}
       await upload(message.results).then(function (tresults) {
         
-        //IDK why it's complaining _appUrls and _status do not exist. code works though...
-        batchUrls = tresults.map(test => test._appUrls._batch).filter((item, i, ar) => ar.indexOf(item) === i)
-        tresults.map(test => test._status).forEach(function(obj) {
-          var key = JSON.stringify(obj)
-          statusCounter[key] = (statusCounter[key] || 0) + 1
-        })
+        try{
+          //IDK why it's complaining _appUrls and _status do not exist. code works though...
+          batchUrls = tresults.map(test => test._appUrls._batch).filter((item, i, ar) => ar.indexOf(item) === i)
+          tresults.map(test => test._status).forEach(function(obj) {
+            var key = JSON.stringify(obj)
+            statusCounter[key] = (statusCounter[key] || 0) + 1
+          })
+        } catch {
+          //do nothing
+        }
         
         console.log(`\nBatch Url: ${batchUrls.join('')}\n`)
         console.log(`Test Results: ${JSON.stringify(statusCounter)}\n`)
