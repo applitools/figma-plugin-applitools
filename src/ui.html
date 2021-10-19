@@ -1,7 +1,28 @@
+<link rel="stylesheet" href="styles.css">
 <h2>Applitools Settings</h2>
 <p>API Key: <input id="key" value=""></p>
 <p>Server URL: <input id="url" value="https://eyesapi.applitools.com"></p>
-<p>All Components?: <input type="checkbox" id="everything" value=""></p>
-<!-- <label for="everything">All Components?</label> -->
+<p>All Components? <input type="checkbox" id="everything" value=""></p>
 <button id="save">Save</button>
 <button id="cancel">Cancel</button>
+<p>
+    <textarea readonly id="console" rows="4" cols="50"></textarea>
+</p>
+
+<!-- https://stackoverflow.com/questions/20256760/javascript-console-log-to-html/20256785 -->
+<script>
+(function () {
+    if (!console) {
+        console = {};
+    }
+    var old = console.log;
+    var logger = document.getElementById('console');
+    console.log = function (message) {
+        if (typeof message == 'object') {
+            logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : String(message) + '\n');
+        } else {
+            logger.innerHTML += message + '\n';
+        }
+    }
+})();
+</script>

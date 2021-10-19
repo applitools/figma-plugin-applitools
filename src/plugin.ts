@@ -15,6 +15,8 @@ figma.ui.onmessage = async (msg) => {
     case 'UPLOAD_COMPLETE':
       // fix this... seems to cut things off before the upload is actually done
       //figma.closePlugin("Upload Complete!")
+      figma.notify("Upload Complete");
+      console.log("Upload Complete");
       break
     case 'KEY_OR_URL_ERROR':
       figma.notify("Please enter your Applitools Server Url and Api Key!")
@@ -23,7 +25,6 @@ figma.ui.onmessage = async (msg) => {
 }
 
 async function collectDesigns(node) {
-  //let results = { designs: []}
   const exportSettings: ExportSettingsImage = { format: "PNG", suffix: '', constraint: { type: "SCALE", value: 1 }, contentsOnly: true }
 
   const { id, name, width, height} = node
