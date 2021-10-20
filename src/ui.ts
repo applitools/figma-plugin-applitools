@@ -49,6 +49,7 @@ onmessage = event => {
 }
 
 async function upload(results) {
+  crossOriginIsolated
   console.log('Uploading to Applitools');
   const configuration = new Configuration();
   configuration.setApiKey((<HTMLInputElement>document.getElementById('key')).value);
