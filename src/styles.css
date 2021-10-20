@@ -1,0 +1,14 @@
+textarea {
+    overflow-y: scroll;
+    overflow: scroll;
+    width: 500px;
+    height: auto;
+    resize: none; /* Remove this if you want the user to resize the textarea */
+    border:solid 2px rgb(0, 0, 0);
+}
+
+body, html {
+    background-color: #00a096;
+    width: 500px;
+    height: 500px;
+}

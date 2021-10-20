@@ -1,10 +1,13 @@
-const { children } = figma.currentPage
+import { debug } from "console"
 
-figma.ui.onmessage = async ( msg) => {
+const { children } = figma.currentPage
+let results = { designs: []}
+
+figma.ui.onmessage = async (msg) => {
   switch (msg.type) {
     case 'SAVE':
       figma.notify("Getting Designs")
-      getDesigns()
+      getDesigns(msg.everything)
       break
     case 'CANCEL':
       figma.closePlugin()
@@ -12,6 +15,8 @@ figma.ui.onmessage = async ( msg) => {
     case 'UPLOAD_COMPLETE':
       // fix this... seems to cut things off before the upload is actually done
       //figma.closePlugin("Upload Complete!")
+      figma.notify("Upload Complete");
+      console.log("Upload Complete");
       break
     case 'KEY_OR_URL_ERROR':
       figma.notify("Please enter your Applitools Server Url and Api Key!")
@@ -19,22 +24,32 @@ figma.ui.onmessage = async ( msg) => {
   }
 }
 
-async function getDesigns() {
-  let results = { designs: []}
+async function collectDesigns(node) {
   const exportSettings: ExportSettingsImage = { format: "PNG", suffix: '', constraint: { type: "SCALE", value: 1 }, contentsOnly: true }
-  
-  // might need to filter out certain types
+
+  const { id, name, width, height} = node
+  const bytes = await node.exportAsync(exportSettings)
+  results.designs.push({
+    id,
+    name,
+    width,
+    height,
+    bytes,
+  })
+}
+
+async function getDesigns(everything=false) {
   for (let node of children) {
-    const { id, name, width, height} = node
-    const bytes = await node.exportAsync(exportSettings)
-    results.designs.push({
-      id,
-      name,
-      width,
-      height,
-      bytes,
-    })
+
+    if(everything) {
+      await collectDesigns(node)
+    } else {
+      if (node.constructor.name == "FrameNode") {
+        await collectDesigns(node)
+      }
+    }
   }
+
   figma.notify("Uploading Designs to Applitools")
   figma.ui.postMessage({ results })
 }
