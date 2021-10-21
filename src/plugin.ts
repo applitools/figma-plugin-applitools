@@ -26,7 +26,6 @@ figma.ui.onmessage = async (msg) => {
 
 async function collectDesigns(node) {
   const exportSettings: ExportSettingsImage = { format: "PNG", suffix: '', constraint: { type: "SCALE", value: 1 }, contentsOnly: true }
-
   const { id, name, width, height} = node
   const bytes = await node.exportAsync(exportSettings)
   results.designs.push({

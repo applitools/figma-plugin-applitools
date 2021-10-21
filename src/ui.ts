@@ -35,7 +35,8 @@ onmessage = event => {
             statusCounter[key] = (statusCounter[key] || 0) + 1
           })
         } catch {
-          //do nothing
+          batchUrls = []
+          statusCounter = {}
         }
         
         console.log(`\nBatch Url: ${batchUrls.join('')}\n`)
@@ -49,11 +50,13 @@ onmessage = event => {
 }
 
 async function upload(results) {
+  
   console.log('Uploading to Applitools');
   const configuration = new Configuration();
   configuration.setApiKey((<HTMLInputElement>document.getElementById('key')).value);
   configuration.setServerUrl((<HTMLInputElement>document.getElementById('url')).value);
   configuration.setBatch(new BatchInfo('Figma Designs'));
+  
   return await Promise.all(
     
     await results.designs.map(async (design) => {
