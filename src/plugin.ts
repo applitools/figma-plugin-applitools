@@ -27,7 +27,7 @@ figma.ui.onmessage = async (msg) => {
 }
 
 async function collectDesigns(node, results) {
-  const exportSettings: ExportSettingsImage = { format: "PNG", suffix: '', constraint: { type: "SCALE", value: 1 }, contentsOnly: true }
+  const exportSettings: ExportSettingsImage = { format: "PNG", suffix: '', constraint: { type: "SCALE", value: 1 }, contentsOnly: false }
   const { id, name, width, height} = node
   const bytes = await node.exportAsync(exportSettings)
   results.designs.push({
@@ -46,7 +46,7 @@ async function getDesigns(everything=false) {
     if(everything) {
       await collectDesigns(node, results)
     } else {
-      if (node.constructor.name == "FrameNode") {
+      if (node.type === "FRAME") {
         await collectDesigns(node, results)
       }
     }
