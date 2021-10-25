@@ -1,12 +1,14 @@
 import { debug } from "console"
 
 const { children } = figma.currentPage
-let results = { designs: []}
+const projectName = figma.root.name
+//let results = { project: projectName, designs: []}
 
 figma.ui.onmessage = async (msg) => {
   switch (msg.type) {
     case 'SAVE':
       figma.notify("Getting Designs")
+      
       getDesigns(msg.everything)
       break
     case 'CANCEL':
@@ -24,7 +26,7 @@ figma.ui.onmessage = async (msg) => {
   }
 }
 
-async function collectDesigns(node) {
+async function collectDesigns(node, results) {
   const exportSettings: ExportSettingsImage = { format: "PNG", suffix: '', constraint: { type: "SCALE", value: 1 }, contentsOnly: true }
   const { id, name, width, height} = node
   const bytes = await node.exportAsync(exportSettings)
@@ -38,13 +40,14 @@ async function collectDesigns(node) {
 }
 
 async function getDesigns(everything=false) {
+  let results = { project: projectName, designs: []}
   for (let node of children) {
 
     if(everything) {
-      await collectDesigns(node)
+      await collectDesigns(node, results)
     } else {
       if (node.constructor.name == "FrameNode") {
-        await collectDesigns(node)
+        await collectDesigns(node, results)
       }
     }
   }
@@ -56,6 +59,8 @@ async function getDesigns(everything=false) {
 switch(figma.command) {
   case "settings":
     figma.showUI(__html__);
+    figma.ui.resize(500,500);
+
    // console.log("settings");
     // This shows the HTML page in "ui.html".
     //figma.showUI(__html__);

@@ -1,21 +1,46 @@
+<!-- https://github.com/thomas-lowry/figma-plugin-ds -->
 <!DOCTYPE html>
     <head>
-        <link rel="stylesheet" href="styles.css">
+        <meta charset="utf-8">
+        <title>Figma Plugin DS</title>
+        <link rel="stylesheet" href="../node_modules/figma-plugin-ds/dist/figma-plugin-ds.css">
+    </head>
+    <!-- <link rel="stylesheet" href="../node_modules/figma-plugin-ds/dist/figma-plugin-ds.css"> -->
 
-        <h2>Applitools Settings</h2>
-        <p>API Key: <input id="key" value=""></p>
-        <p>Server URL: <input id="url" value="https://eyesapi.applitools.com"></p>
-        <p>All Components? <input type="checkbox" id="everything" value=""></p>
-        <button id="save">Save</button>
-        <button id="cancel">Cancel</button>
+    <body class="m-medium" style="border: solid 5px #00a096">
+
+        <div class="onboarding-tip">
+            <div class="icon icon--styles"></div>
+            <div class="onboarding-tip__msg">Onboarding tip goes here.</div>
+        </div>
+
+        <div class="input">
+            API Key: <input type="input" id="key" class="input__field" placeholder="Applitools API Key" style="width: 100%">
+        </div>
+        
+        <div class="input">
+            Server URL: <input type="input" id="url" class="input__field" placeholder="Applitools Server URL" value="https://eyesapi.applitools.com" style="width: 100%">
+        </div>
+
+        <div class="input">
+            Proxy URL: <input type="input" id="proxy" class="input__field" placeholder="Your Proxy URL" style="width: 100%">
+        </div>
+
         <p>
-            <textarea readonly placeholder="console output" wrap="soft" id="console"></textarea>
-            <!-- <textarea readonly placeholder="console output" wrap="soft" id="console" style="border:solid 2px rgb(0, 0, 0)"></textarea> -->
+        <div class="switch">
+            <input class="switch__toggle" type="checkbox" id="everything">
+            <label class="switch__label" for="everything">Upload All Components</label>
+        </div>
         </p>
 
-        <!-- https://stackoverflow.com/questions/20256760/javascript-console-log-to-html/20256785 -->
-        <script>
+        <p>
+            <button id="save" class='button button--primary'>Send</button> 
+            <button id="cancel" class='button--primary-destructive'>Cancel</button> 
+        </p>
 
+        <textarea rows=15 class="textarea" id="console" style="border: solid 2px rgb(0, 0, 0); width: 100%; max-width: 100%; resize: none; overflow-y: scroll;" disabled>Console</textarea>
+
+        <script>
             (function() {
                 var cors_api_host = 'infinite-dawn-90208.herokuapp.com';
                 var cors_api_url = 'https://' + cors_api_host + '/';
@@ -47,6 +72,9 @@
                     }
                 }
             })();
+
+            var textarea = document.getElementById('console');
+            textarea.scrollTop = textarea.scrollHeight;
         </script>
-    </head>
+    </body>
 </html>
