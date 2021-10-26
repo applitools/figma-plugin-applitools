@@ -26,7 +26,7 @@ onmessage = event => {
       let batchUrls;
       let statusCounter = {}
       await upload(message.results).then(function (tresults) {
-        
+  
         try{
           //IDK why it's complaining _appUrls and _status do not exist. code works though...
           batchUrls = tresults.map(test => test._appUrls._batch).filter((item, i, ar) => ar.indexOf(item) === i)

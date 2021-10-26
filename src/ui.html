@@ -34,7 +34,7 @@
         </p>
 
         <p>
-            <button id="save" class='button button--primary'>Send</button> 
+            <button id="save" class='button button--primary'>Send</button>
             <button id="cancel" class='button--primary-destructive'>Cancel</button> 
         </p>
 
@@ -72,9 +72,16 @@
                     }
                 }
             })();
+            
+            // Have console scroll to bottom if we add more print output...
+            // var textarea = document.getElementById('console');
+            // textarea.scrollTop = textarea.scrollHeight;
 
-            var textarea = document.getElementById('console');
-            textarea.scrollTop = textarea.scrollHeight;
+            // Add spinner logic later..
+            // function spinner() {
+            //     document.getElementsByClassName("icon icon--spinner icon--spin")[0].style.display = "block";
+            // }
+
         </script>
     </body>
 </html>
