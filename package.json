@@ -47,6 +47,7 @@
     "core-js": "^3.14.0",
     "crypto-browserify": "^3.12.0",
     "figma-plugin-bypass": "^1.0.0",
+    "figma-plugin-ds": "^1.0.1",
     "http": "^0.0.1-security",
     "http-browserify": "^1.7.0",
     "https": "^1.0.0",

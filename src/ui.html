@@ -1,20 +1,72 @@
+<!-- https://github.com/thomas-lowry/figma-plugin-ds -->
+<!-- https://forum.figma.com/t/linking-css-to-ui-html/5347 -->
 <!DOCTYPE html>
     <head>
-        <link rel="stylesheet" href="styles.css">
+        <meta charset="utf-8">
+        <title>Applitools Figma Plugin</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomas-lowry/figma-plugin-ds@master/dist/figma-plugin-ds.css">
+    </head>
 
-        <h2>Applitools Settings</h2>
-        <p>API Key: <input id="key" value=""></p>
-        <p>Server URL: <input id="url" value="https://eyesapi.applitools.com"></p>
-        <p>All Components? <input type="checkbox" id="everything" value=""></p>
-        <button id="save">Save</button>
-        <button id="cancel">Cancel</button>
+    <body class="m-small" style="border: solid 5px #00a096">
+
+        <div class="onboarding-tip" style="justify-content: center">
+            <div class="icon icon--effects"></div>
+            <div class="onboarding-tip__msg">About Applitools</div>
+        </div>
+        <p></p>
+
+        <div class="input">
+            Enter API Key: <input type="input" id="key" class="input__field" placeholder="Your Applitools API Key 'Required'" style="width: 100%">
+        </div>
+        
+        <div class="input">
+            Enter Server URL: <input type="input" id="url" class="input__field" placeholder="Your Applitools Server URL Default: https://eyesapi.applitools.com" style="width: 100%">
+        </div>
+
+        <div class="input">
+            Enter Proxy URL: <input type="input" id="proxy" class="input__field" placeholder="Your Proxy URL 'Not Required'" style="width: 100%">
+        </div>
+
         <p>
-            <textarea readonly placeholder="console output" wrap="soft" id="console"></textarea>
-            <!-- <textarea readonly placeholder="console output" wrap="soft" id="console" style="border:solid 2px rgb(0, 0, 0)"></textarea> -->
+        <div class="switch">
+            <input class="switch__toggle" type="checkbox" id="everything">
+            <label class="switch__label" for="everything">Upload All Components</label>
+        </div>
         </p>
 
-        <!-- https://stackoverflow.com/questions/20256760/javascript-console-log-to-html/20256785 -->
+        <ul style="list-style: none; display: flex; align-items: center; justify-content: center">
+            <li style="margin: auto"><button id="save" class='button button--primary'>Submit</button></li>
+            <li style="margin: auto"><button id="cancel" class='button button--primary-destructive'>Cancel</button></li>
+        </ul>
+
+        <!-- <div id="cancel" class='button button--primary-destructive'>
+            Cancel
+        </div> -->
+        
+        <!-- <button id="save" class='button button--primary'>Submit</button> -->
+        <!-- <button id="cancel" class='button button--primary-destructive'>Cancel</button>  -->
+        
+        <textarea rows=10 class="textarea" id="console" style="border: solid 2px rgb(0, 0, 0); width: 100%; max-width: 100%; resize: none; overflow-y: scroll;" disabled>Console</textarea>
+
+        <script src="https://cdn.jsdelivr.net/gh/thomas-lowry/figma-plugin-ds/dist/iife/figma-plugin-ds.js"></script>
         <script>
+            (function() {
+                var cors_api_host = 'infinite-dawn-90208.herokuapp.com';
+                var cors_api_url = 'https://' + cors_api_host + '/';
+                var slice = [].slice;
+                var origin = window.location.protocol + '//' + window.location.host;
+                var open = XMLHttpRequest.prototype.open;
+                XMLHttpRequest.prototype.open = function() {
+                    var args = slice.call(arguments);
+                    var targetOrigin = /^https?:\/\/([^\/]+)/i.exec(args[1]);
+                    if (targetOrigin && targetOrigin[0].toLowerCase() !== origin &&
+                        targetOrigin[1] !== cors_api_host) {
+                        args[1] = cors_api_url + args[1];
+                    }
+                    return open.apply(this, args);
+                };
+            })();
+
             (function () {
                 if (!console) {
                     console = {};
@@ -29,6 +81,16 @@
                     }
                 }
             })();
+            
+            // Have console scroll to bottom if we add more print output...
+            // var textarea = document.getElementById('console');
+            // textarea.scrollTop = textarea.scrollHeight;
+
+            // Add spinner logic later..
+            // function spinner() {
+            //     document.getElementsByClassName("icon icon--spinner icon--spin")[0].style.display = "block";
+            // }
+
         </script>
-    </head>
+    </body>
 </html>

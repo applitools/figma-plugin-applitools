@@ -1,9 +1,9 @@
 console.log("UI")
 document.getElementById('save').onclick = () => {
   console.log("****save******")
-  if ((<HTMLInputElement>document.getElementById('key')).value.length > 0 && (<HTMLInputElement>document.getElementById('url')).value.length > 0) {
-    var everything = (<HTMLInputElement>document.getElementById('everything')).checked;
-    parent.postMessage({ pluginMessage: { type: 'SAVE', everything: everything } }, '*')
+  if ((<HTMLInputElement>document.getElementById('key')).value.length > 0) {
+    var allComponents = (<HTMLInputElement>document.getElementById('everything')).checked;
+    parent.postMessage({ pluginMessage: { type: 'SAVE', everything: allComponents } }, '*');
   }
   else {
     parent.postMessage({ pluginMessage: { type: 'KEY_OR_URL_ERROR' } }, '*')
@@ -26,7 +26,7 @@ onmessage = event => {
       let batchUrls;
       let statusCounter = {}
       await upload(message.results).then(function (tresults) {
-        
+  
         try{
           //IDK why it's complaining _appUrls and _status do not exist. code works though...
           batchUrls = tresults.map(test => test._appUrls._batch).filter((item, i, ar) => ar.indexOf(item) === i)
@@ -35,7 +35,8 @@ onmessage = event => {
             statusCounter[key] = (statusCounter[key] || 0) + 1
           })
         } catch {
-          //do nothing
+          batchUrls = []
+          statusCounter = {}
         }
         
         console.log(`\nBatch Url: ${batchUrls.join('')}\n`)
@@ -49,29 +50,61 @@ onmessage = event => {
 }
 
 async function upload(results) {
+  
   console.log('Uploading to Applitools');
   const configuration = new Configuration();
   configuration.setApiKey((<HTMLInputElement>document.getElementById('key')).value);
-  configuration.setServerUrl((<HTMLInputElement>document.getElementById('url')).value);
-  configuration.setBatch(new BatchInfo('Figma Designs'));
+  
+  var serverUrl = (<HTMLInputElement>document.getElementById('url')).value
+  if (serverUrl) {
+    configuration.setServerUrl(serverUrl);
+  }
+  
+  // if ((<HTMLInputElement>document.getElementById('proxy')).value) {
+  //   var proxyUrl = (<HTMLInputElement>document.getElementById('proxy')).value
+  //   let proxyInfo = {
+  //     url: proxyUrl,
+  //     username: null, 
+  //     password: null, 
+  //     isHttpOnly: true
+  //   };
+  //   console.log("Setting Proxy: " + proxyInfo)
+  //   configuration.setProxy(proxyInfo);
+  //   configuration.setProxy(new ProxySettings('http://127.0.0.1:8080', undefined, undefined, true))
+  // }
+
+  let projectName = `Figma - ${results.project}`
+
+  configuration.setBatch(new BatchInfo(projectName));
+  
   return await Promise.all(
     
     await results.designs.map(async (design) => {
       let testResults;
+      let testName = `${design.name} - ${design.id}`
 
       const eyes = new Eyes()
  
       try {
           eyes.setConfiguration(configuration);
-          eyes.setBaselineEnvName(`${design.name}`)
-          await eyes.open('Figma App', design.name + ' ' + design.id, { width: design.width, height: design.height });
-          await eyes.check(design.name + ' ' + design.id, Target.image(Buffer.from(design.bytes)));
+
+          //Set Proxy if entered...
+          var proxyUrl = (<HTMLInputElement>document.getElementById('proxy')).value
+          if (proxyUrl) {
+            console.log("Setting Proxy: " + proxyUrl)
+            eyes.setProxy(proxyUrl);
+          }
+
+          eyes.setHostOS(`${projectName}`)
+          eyes.setBaselineEnvName(`${testName}`)
+          await eyes.open(projectName, testName, { width: design.width, height: design.height });
+          await eyes.check(testName, Target.image(Buffer.from(design.bytes)));
 
           testResults = await eyes.close(false);
 
           //console.log(testResults);
-      } catch (e) {
-          console.error(e);
+      } catch (error) {
+          console.log(error); //Doesn't report an error...
           await eyes.abortIfNotClosed();
       }
       
