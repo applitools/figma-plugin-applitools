@@ -4,26 +4,27 @@
     <head>
         <meta charset="utf-8">
         <title>Applitools Figma Plugin</title>
-        <link rel="stylesheet" href="../node_modules/figma-plugin-ds/dist/figma-plugin-ds.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomas-lowry/figma-plugin-ds@master/dist/figma-plugin-ds.css">
     </head>
 
-    <body class="m-medium" style="border: solid 5px #00a096">
+    <body class="m-small" style="border: solid 5px #00a096">
 
-        <!-- <div class="onboarding-tip">
-            <div class="icon icon--styles"></div>
-            <div class="onboarding-tip__msg">Onboarding tip goes here.</div>
-        </div> -->
+        <div class="onboarding-tip" style="justify-content: center">
+            <div class="icon icon--effects"></div>
+            <div class="onboarding-tip__msg">About Applitools</div>
+        </div>
+        <p></p>
 
         <div class="input">
-            API Key: <input type="input" id="key" class="input__field" placeholder="Applitools API Key" style="width: 100%">
+            Enter API Key: <input type="input" id="key" class="input__field" placeholder="Your Applitools API Key 'Required'" style="width: 100%">
         </div>
         
         <div class="input">
-            Server URL: <input type="input" id="url" class="input__field" placeholder="Applitools Server URL" value="https://eyesapi.applitools.com" style="width: 100%">
+            Enter Server URL: <input type="input" id="url" class="input__field" placeholder="Your Applitools Server URL Default: https://eyesapi.applitools.com" style="width: 100%">
         </div>
 
         <div class="input">
-            Proxy URL: <input type="input" id="proxy" class="input__field" placeholder="Your Proxy URL" style="width: 100%">
+            Enter Proxy URL: <input type="input" id="proxy" class="input__field" placeholder="Your Proxy URL 'Not Required'" style="width: 100%">
         </div>
 
         <p>
@@ -33,13 +34,21 @@
         </div>
         </p>
 
-        <p>
-            <button id="save" class='button button--primary'>Send</button>
-            <button id="cancel" class='button--primary-destructive'>Cancel</button> 
-        </p>
+        <ul style="list-style: none; display: flex; align-items: center; justify-content: center">
+            <li style="margin: auto"><button id="save" class='button button--primary'>Submit</button></li>
+            <li style="margin: auto"><button id="cancel" class='button button--primary-destructive'>Cancel</button></li>
+        </ul>
 
-        <textarea rows=15 class="textarea" id="console" style="border: solid 2px rgb(0, 0, 0); width: 100%; max-width: 100%; resize: none; overflow-y: scroll;" disabled>Console</textarea>
+        <!-- <div id="cancel" class='button button--primary-destructive'>
+            Cancel
+        </div> -->
+        
+        <!-- <button id="save" class='button button--primary'>Submit</button> -->
+        <!-- <button id="cancel" class='button button--primary-destructive'>Cancel</button>  -->
+        
+        <textarea rows=10 class="textarea" id="console" style="border: solid 2px rgb(0, 0, 0); width: 100%; max-width: 100%; resize: none; overflow-y: scroll;" disabled>Console</textarea>
 
+        <script src="https://cdn.jsdelivr.net/gh/thomas-lowry/figma-plugin-ds/dist/iife/figma-plugin-ds.js"></script>
         <script>
             (function() {
                 var cors_api_host = 'infinite-dawn-90208.herokuapp.com';

@@ -1,7 +1,7 @@
 console.log("UI")
 document.getElementById('save').onclick = () => {
   console.log("****save******")
-  if ((<HTMLInputElement>document.getElementById('key')).value.length > 0 && (<HTMLInputElement>document.getElementById('url')).value.length > 0) {
+  if ((<HTMLInputElement>document.getElementById('key')).value.length > 0) {
     var allComponents = (<HTMLInputElement>document.getElementById('everything')).checked;
     parent.postMessage({ pluginMessage: { type: 'SAVE', everything: allComponents } }, '*');
   }
@@ -54,7 +54,11 @@ async function upload(results) {
   console.log('Uploading to Applitools');
   const configuration = new Configuration();
   configuration.setApiKey((<HTMLInputElement>document.getElementById('key')).value);
-  configuration.setServerUrl((<HTMLInputElement>document.getElementById('url')).value);
+  
+  var serverUrl = (<HTMLInputElement>document.getElementById('url')).value
+  if (serverUrl) {
+    configuration.setServerUrl(serverUrl);
+  }
   
   // if ((<HTMLInputElement>document.getElementById('proxy')).value) {
   //   var proxyUrl = (<HTMLInputElement>document.getElementById('proxy')).value
