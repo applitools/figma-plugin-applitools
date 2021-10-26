@@ -83,11 +83,14 @@ async function upload(results) {
  
       try {
           eyes.setConfiguration(configuration);
-          if ((<HTMLInputElement>document.getElementById('proxy')).value) {
-            var proxyUrl = (<HTMLInputElement>document.getElementById('proxy')).value
+
+          //Set Proxy if entered...
+          var proxyUrl = (<HTMLInputElement>document.getElementById('proxy')).value
+          if (proxyUrl) {
             console.log("Setting Proxy: " + proxyUrl)
             eyes.setProxy(proxyUrl);
           }
+
           eyes.setHostOS(`${projectName}`)
           eyes.setBaselineEnvName(`${testName}`)
           await eyes.open(projectName, testName, { width: design.width, height: design.height });

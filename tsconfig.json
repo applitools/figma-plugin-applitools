@@ -5,8 +5,7 @@
     "baseUrl": ".",
     "typeRoots": [
       "./node_modules/@types",
-      "./node_modules/@figma",
-      "./node_modules/@applitools/types/types",
+      "./node_modules/@figma"
     ],
     "removeComments": true,
     //"moduleResolution": "node"
