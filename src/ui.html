@@ -13,43 +13,59 @@
             <div class="icon icon--effects"></div>
             <div class="onboarding-tip__msg">About Applitools</div>
         </div>
-        <p></p>
-
+       
         <div class="input">
             Enter API Key: <input type="input" id="key" class="input__field" placeholder="Your Applitools API Key 'Required'" style="width: 100%">
         </div>
         
         <div class="input">
-            Enter Server URL: <input type="input" id="url" class="input__field" placeholder="Your Applitools Server URL Default: https://eyesapi.applitools.com" style="width: 100%">
+            Enter Server URL: <input type="input" id="url" class="input__field" placeholder="Default: https://eyesapi.applitools.com" style="width: 100%">
         </div>
 
         <div class="input">
-            Enter Proxy URL: <input type="input" id="proxy" class="input__field" placeholder="Your Proxy URL 'Not Required'" style="width: 100%">
+            Enter Proxy URL: <input type="input" id="proxy" class="input__field" placeholder="Your Proxy URL 'Optional'" style="width: 100%">
         </div>
 
-        <p>
-        <div class="switch">
-            <input class="switch__toggle" type="checkbox" id="everything">
-            <label class="switch__label" for="everything">Upload All Components</label>
-        </div>
-        </p>
+        <label for="matchLevel">Select Match Level:</label>
+        <select id="matchLevel" class="select-menu">
+            <option value="Strict" >Strict</option>
+            <option value="Content" >Content</option>
+            <option value="Layout" >Layout</option>
+            <option value="Exact" >Exact</option>
+        </select>
 
+        <label for="contrastLevel">Select Contrast Level:</label>
+        <select id="contrastLevel" class="select-menu">
+            <option value="AA 2_0" >AA 2_0</option>
+            <option value="AA 2_1" >AA 2_1</option>
+            <option value="AAA 2_0" >AAA 2_0</option>
+            <option value="AAA 2_1" >AAA 2_1</option>
+        </select>
+
+        <label for="switches">Options:</label>
+        <ul id="switches" style="list-style: none; display: flex; margin: auto">
+            
+            <div class="switch">
+                <input class="switch__toggle" type="checkbox" id="everything">
+                <label class="switch__label" for="everything">Upload All Components</label>
+            </div>
+            
+            <div class="switch">
+                <input class="switch__toggle" type="checkbox" id="saveFailedTests">
+                <label class="switch__label" for="saveFailedTests">Save Failed Tests</label>
+            </div>
+        </ul>
+    
         <ul style="list-style: none; display: flex; align-items: center; justify-content: center">
             <li style="margin: auto"><button id="save" class='button button--primary'>Submit</button></li>
             <li style="margin: auto"><button id="cancel" class='button button--primary-destructive'>Cancel</button></li>
         </ul>
-
-        <!-- <div id="cancel" class='button button--primary-destructive'>
-            Cancel
-        </div> -->
-        
-        <!-- <button id="save" class='button button--primary'>Submit</button> -->
-        <!-- <button id="cancel" class='button button--primary-destructive'>Cancel</button>  -->
         
         <textarea rows=10 class="textarea" id="console" style="border: solid 2px rgb(0, 0, 0); width: 100%; max-width: 100%; resize: none; overflow-y: scroll;" disabled>Console</textarea>
-
+        
         <script src="https://cdn.jsdelivr.net/gh/thomas-lowry/figma-plugin-ds/dist/iife/figma-plugin-ds.js"></script>
         <script>
+
             (function() {
                 var cors_api_host = 'infinite-dawn-90208.herokuapp.com';
                 var cors_api_url = 'https://' + cors_api_host + '/';
@@ -81,6 +97,12 @@
                     }
                 }
             })();
+
+            //initialize all select menus
+            selectMenu.init();
+
+            //uninitialize all select menus
+            //selectMenu.destroy('matchLevel');
             
             // Have console scroll to bottom if we add more print output...
             // var textarea = document.getElementById('console');

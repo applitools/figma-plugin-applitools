@@ -1,3 +1,12 @@
+const {
+  MatchLevel,
+  AccessibilityLevel,
+  AccessibilityGuidelinesVersion,
+  Region,
+  ImageMatchSettings,
+  ExactMatchSettings,
+} = require('@applitools/eyes-images')
+
 console.log("UI")
 document.getElementById('save').onclick = () => {
   console.log("****save******")
@@ -59,7 +68,21 @@ async function upload(results) {
   if (serverUrl) {
     configuration.setServerUrl(serverUrl);
   }
-  
+
+  var setMatchLevel = (<HTMLInputElement>document.getElementById('matchLevel')).value
+  configuration.setMatchLevel(eval('MatchLevel.' + setMatchLevel));
+
+  var saveFailedTests = (<HTMLInputElement>document.getElementById('saveFailedTests')).checked;  
+  configuration.setSaveFailedTests(saveFailedTests);
+
+  var contrastLevel = (<HTMLInputElement>document.getElementById('contrastLevel')).value
+  var aLevel = contrastLevel.split(' ')[0];
+  var wcag = contrastLevel.split(' ')[1];
+  configuration.setAccessibilityValidation({
+    level: eval('AccessibilityLevel.' + aLevel), 
+    guidelinesVersion: eval('AccessibilityGuidelinesVersion.WCAG_' + wcag)
+  });
+
   // if ((<HTMLInputElement>document.getElementById('proxy')).value) {
   //   var proxyUrl = (<HTMLInputElement>document.getElementById('proxy')).value
   //   let proxyInfo = {

@@ -4,7 +4,7 @@
 //let eyes = require("eyes.images");
 //import Eyes from 'eyes.images'
 //var x = require("eyes.images")
-//import {Eyes} from "@applitools/eyes-images";
+import {MatchLevel, Eyes} from "@applitools/eyes-images";
 //import * as fetch from "node-fetch";
 export async function test(): Promise<void> { 
   //console.log('Test!');
