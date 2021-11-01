@@ -1,6 +1,8 @@
 import { debug } from "console"
 
-const { children } = figma.currentPage
+const { children, selection } = figma.currentPage
+//const selected = figma.currentPage.selection
+
 const projectName = figma.root.name
 //let results = { project: projectName, designs: []}
 
@@ -26,28 +28,36 @@ figma.ui.onmessage = async (msg) => {
   }
 }
 
-async function collectDesigns(node, results) {
-  const exportSettings: ExportSettingsImage = { format: "PNG", suffix: '', constraint: { type: "SCALE", value: 1 }, contentsOnly: false }
-  const { id, name, width, height} = node
+async function collectDesigns(node, results, everything) {
+  const exportSettings: ExportSettingsImage = { format: "PNG", suffix: '', constraint: { type: "SCALE", value: 1 }, contentsOnly: false } //contentsOnly: everything ??
+  //let parentName = node.parent.name;
+  const { id, name, width, height } = node
   const bytes = await node.exportAsync(exportSettings)
   results.designs.push({
     id,
     name,
     width,
     height,
-    bytes,
+    bytes
   })
 }
 
 async function getDesigns(everything=false) {
   let results = { project: projectName, designs: []}
-  for (let node of children) {
+  
+  if (selection.length > 0) {
+    //https://www.figma.com/plugin-docs/api/properties/PageNode-selection/
+    var nodes = selection;
+  } else {
+    var nodes = children;
+  }
 
+  for (let node of nodes) {
     if(everything) {
-      await collectDesigns(node, results)
+      await collectDesigns(node, results, everything)
     } else {
       if (node.type === "FRAME") {
-        await collectDesigns(node, results)
+        await collectDesigns(node, results, everything)
       }
     }
   }
