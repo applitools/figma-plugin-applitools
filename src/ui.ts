@@ -1,3 +1,5 @@
+import { randomBytes } from "crypto";
+
 const {
   MatchLevel,
   AccessibilityLevel,
@@ -5,12 +7,22 @@ const {
   Region,
   ImageMatchSettings,
   ExactMatchSettings,
+  Eyes, 
+  Target, 
+  Configuration, 
+  BatchInfo
 } = require('@applitools/eyes-images')
 
-console.log("UI")
+const axios = require('axios')
+const qs = require('qs');
+
 document.getElementById('save').onclick = () => {
-  console.log("****save******")
+  console.log("****save******");
+
+  (<HTMLInputElement>document.getElementById('key')).value = 'vFTR101InkcBkWd4111aMd6Ge2DrimdbdY003W8zB1jRR5E110';
+
   if ((<HTMLInputElement>document.getElementById('key')).value.length > 0) {
+    // figma.clientStorage.setAsync('apiKey', (<HTMLInputElement>document.getElementById('key')).value)
     var allComponents = (<HTMLInputElement>document.getElementById('everything')).checked;
     parent.postMessage({ pluginMessage: { type: 'SAVE', everything: allComponents } }, '*');
   }
@@ -18,8 +30,6 @@ document.getElementById('save').onclick = () => {
     parent.postMessage({ pluginMessage: { type: 'KEY_OR_URL_ERROR' } }, '*')
   }
 }
-
-const {Eyes, Target, Configuration, BatchInfo} = require('@applitools/eyes-images')
 
 document.getElementById('cancel').onclick = () => {
   console.log("User Cancelled")
@@ -35,7 +45,6 @@ onmessage = event => {
       let batchUrls;
       let statusCounter = {}
       await upload(message.results).then(function (tresults) {
-  
         try{
           //IDK why it's complaining _appUrls and _status do not exist. code works though...
           batchUrls = tresults.map(test => test._appUrls._batch).filter((item, i, ar) => ar.indexOf(item) === i)
@@ -58,10 +67,38 @@ onmessage = event => {
   }
 }
 
+async function getApiflashImage(imageUrl, width, height) {
+
+  var query = qs.stringify({ 
+     access_key: '0c472849fca041eaa2395583b36a7521', 
+     url: imageUrl, 
+     response_type: 'image', 
+     format: 'png',
+     width: width,
+     height: height 
+  });
+  
+  var url = 'https://api.apiflash.com/v1/urltoimage';
+  const options = {
+     method: 'POST',
+     headers: { 'content-type': 'application/x-www-form-urlencoded' },
+     responseEncoding: 'binary',
+     responseType: 'arraybuffer',
+     data: query,
+     url
+  };
+
+  var response = await axios(options);
+  
+  return Buffer.from(response.data, 'binary')
+}
+
+
 async function upload(results) {
   
   console.log('Uploading to Applitools');
   const configuration = new Configuration();
+
   configuration.setApiKey((<HTMLInputElement>document.getElementById('key')).value);
   
   var serverUrl = (<HTMLInputElement>document.getElementById('url')).value
@@ -109,23 +146,32 @@ async function upload(results) {
       const eyes = new Eyes()
  
       try {
-          eyes.setConfiguration(configuration);
+        eyes.setConfiguration(configuration);
 
-          //Set Proxy if entered...
-          var proxyUrl = (<HTMLInputElement>document.getElementById('proxy')).value
-          if (proxyUrl) {
-            console.log("Setting Proxy: " + proxyUrl)
-            eyes.setProxy(proxyUrl);
-          }
+        //Set Proxy if entered...
+        var proxyUrl = (<HTMLInputElement>document.getElementById('proxy')).value
+        if (proxyUrl) {
+          console.log("Setting Proxy: " + proxyUrl)
+          eyes.setProxy(proxyUrl);
+        }
 
-          eyes.setHostOS(`${projectName}`)
-          eyes.setBaselineEnvName(`${testName}`)
+        eyes.setHostOS(`${projectName}`)
+        eyes.setBaselineEnvName(`${testName}`)
+        await eyes.open(projectName, testName, { width: design.width, height: design.height });
+        await eyes.check(testName, Target.image(Buffer.from(design.bytes)));
+
+        testResults = await eyes.close(false);
+          
+        if (design.name.includes('.com')) {
+          var integrationUrl = `https://www.${design.name}`
+          console.log("Getting Integration Image");
           await eyes.open(projectName, testName, { width: design.width, height: design.height });
-          await eyes.check(testName, Target.image(Buffer.from(design.bytes)));
+          var img = await getApiflashImage(integrationUrl, design.width, design.height)
+          await eyes.check(integrationUrl, Target.image(img).matchLevel(MatchLevel.None))
+          await eyes.close(false)
+          console.log("Finished Getting Integration Image");
+        }
 
-          testResults = await eyes.close(false);
-
-          //console.log(testResults);
       } catch (error) {
           console.log(error); //Doesn't report an error...
           await eyes.abortIfNotClosed();

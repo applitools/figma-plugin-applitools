@@ -7,6 +7,7 @@ const projectName = figma.root.name
 //let results = { project: projectName, designs: []}
 
 figma.ui.onmessage = async (msg) => {
+  
   switch (msg.type) {
     case 'SAVE':
       figma.notify("Getting Designs")
@@ -44,7 +45,7 @@ async function collectDesigns(node, results, everything) {
 
 async function getDesigns(everything=false) {
   let results = { project: projectName, designs: []}
-  
+
   if (selection.length > 0) {
     //https://www.figma.com/plugin-docs/api/properties/PageNode-selection/
     var nodes = selection;
@@ -70,10 +71,20 @@ switch(figma.command) {
   case "settings":
     figma.showUI(__html__);
     figma.ui.resize(500,500);
+    //cache stored values...
+    //https://github.com/Lona/figma-jsonrpc
+    //https://www.figma.com/plugin-docs/api/figma-clientStorage/
+    // var apiKey = figma.clientStorage.getAsync('apiKey')
+    // if (apiKey) {
+    //   figma.ui.postMessage({
+    //     'type': 'apiCredentials',
+    //     'status': true,
+    //     'key': apiKey,
+    //   });
+    // } else {
+    //   figma.clientStorage.setAsync('apiKey', (<HTMLInputElement>document.getElementById('key')).value)
+    // }
 
-   // console.log("settings");
-    // This shows the HTML page in "ui.html".
-    //figma.showUI(__html__);
     figma.ui.postMessage({ type: 'networkRequest' })
     break;
   case "validate":

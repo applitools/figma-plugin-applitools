@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@applitools/eyes-images": "^4.21.0",
+    "qs": "6.10.1",
     "@applitools/types": "1.0.14",
     "assert": "^2.0.0",
     "browser-process-hrtime": "^1.0.0",
