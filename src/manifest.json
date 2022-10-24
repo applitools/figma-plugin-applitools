@@ -7,12 +7,8 @@
   "editorType": [ "figjam", "figma" ],
   "menu": [
     {
-      "name": "Settings",
+      "name": "Upload Designs",
       "command": "settings"
-    },
-    {
-      "name": "Run Visual Tests",
-      "command": "validate"
     }
   ]
 }

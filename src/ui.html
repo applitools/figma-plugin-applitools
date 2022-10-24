@@ -21,46 +21,55 @@
         <div class="input">
             Enter Server URL: <input type="input" id="url" class="input__field" placeholder="Default: https://eyesapi.applitools.com" style="width: 100%">
         </div>
-
         <div class="input">
-            Enter Proxy URL: <input type="input" id="proxy" class="input__field" placeholder="Your Proxy URL 'Optional'" style="width: 100%">
+            <a href="#" id="advanced"><span id="hideShow">Show</span> Advanced</a>
         </div>
-
-        <label for="matchLevel">Select Match Level:</label>
-        <select id="matchLevel" class="select-menu">
-            <option value="Strict" >Strict</option>
-            <option value="Content" >Content</option>
-            <option value="Layout" >Layout</option>
-            <option value="Exact" >Exact</option>
-        </select>
-
-        <label for="contrastLevel">Select Contrast Level:</label>
-        <select id="contrastLevel" class="select-menu">
-            <option value="AA 2_0" >AA 2_0</option>
-            <option value="AA 2_1" >AA 2_1</option>
-            <option value="AAA 2_0" >AAA 2_0</option>
-            <option value="AAA 2_1" >AAA 2_1</option>
-        </select>
-
-        <label for="switches">Options:</label>
-        <ul id="switches" style="list-style: none; display: flex; margin: auto">
-            
-            <div class="switch">
-                <input class="switch__toggle" type="checkbox" id="everything">
-                <label class="switch__label" for="everything">Upload All Components</label>
+        <div>&nbsp;</div>
+        <div id="advanced-section" style="display:none" style="width: 100%">
+            <div class="input">
+                Enter Proxy URL: <input type="input" id="proxy" class="input__field" placeholder="Your Proxy URL 'Optional'" style="width: 100%">
             </div>
-            
-            <div class="switch">
-                <input class="switch__toggle" type="checkbox" id="saveFailedTests">
-                <label class="switch__label" for="saveFailedTests">Save Failed Tests</label>
-            </div>
-        </ul>
-    
+
+            <label for="matchLevel">Select Match Level:</label>
+            <select id="matchLevel" class="select-menu">
+                <option value="Strict" >Strict</option>
+                <option value="Content" >Content</option>
+                <option value="Layout" >Layout</option>
+                <option value="Exact" >Exact</option>
+            </select>
+
+            <label for="contrastLevel">Select Contrast Level:</label>
+            <select id="contrastLevel" class="select-menu">
+                <option value="AA 2_0" >AA 2_0</option>
+                <option value="AA 2_1" >AA 2_1</option>
+                <option value="AAA 2_0" >AAA 2_0</option>
+                <option value="AAA 2_1" >AAA 2_1</option>
+            </select>
+
+            <label for="switches">Options:</label>
+            <ul id="switches" style="list-style: none; display: flex; margin: auto">
+                
+                <div class="switch">
+                    <input class="switch__toggle" type="checkbox" id="everything">
+                    <label class="switch__label" for="everything">Include Components</label>
+                </div>
+                
+                <div class="switch">
+                    <input class="switch__toggle" type="checkbox" id="saveFailedTests">
+                    <label class="switch__label" for="saveFailedTests">Auto Accept unresolved/failed</label>
+                </div>
+            </ul>
+        </div>
         <ul style="list-style: none; display: flex; align-items: center; justify-content: center">
-            <li style="margin: auto"><button id="save" class='button button--primary'>Submit</button></li>
+            <li style="margin: auto"><button id="save" class='button button--primary'>Upload</button></li>
             <li style="margin: auto"><button id="cancel" class='button button--primary-destructive'>Cancel</button></li>
         </ul>
         
+        <div>
+            <label for="results-url">Results:</label>
+            <a id="results-url" class="type--small" href="" target="_blank"></a>
+        </div>
+
         <textarea rows=10 class="textarea" id="console" style="border: solid 2px rgb(0, 0, 0); width: 100%; max-width: 100%; resize: none; overflow-y: scroll;" disabled>Console</textarea>
         
         <script src="https://cdn.jsdelivr.net/gh/thomas-lowry/figma-plugin-ds/dist/iife/figma-plugin-ds.js"></script>
@@ -100,7 +109,6 @@
 
             //initialize all select menus
             selectMenu.init();
-
             //uninitialize all select menus
             //selectMenu.destroy('matchLevel');
             

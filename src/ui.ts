@@ -7,12 +7,31 @@ const {
   ExactMatchSettings,
 } = require('@applitools/eyes-images')
 
-console.log("UI")
-document.getElementById('save').onclick = () => {
-  console.log("****save******")
-  if ((<HTMLInputElement>document.getElementById('key')).value.length > 0) {
+const VERSION = '1.0';
+document.getElementById('advanced').onclick = (event) => {
+  event.preventDefault();
+  const hideShow = <HTMLSpanElement>document.getElementById('hideShow');
+  const advancedSection = <HTMLDivElement>document.getElementById('advanced-section');
+  if (hideShow && hideShow.textContent === 'Show') {
+    hideShow.textContent = 'Hide'
+    advancedSection.style.display='inherit';
+  } else {
+    hideShow.textContent = 'Show'
+    advancedSection.style.display='none';
+  }
+}
+
+document.getElementById('save').onclick = (event) => {
+  let apiKey = (<HTMLInputElement>document.getElementById('key')).value;
+  let resultsHref = <HTMLAnchorElement>document.getElementById("results-url");
+  resultsHref.style.display='none';
+  resultsHref.href='';
+  resultsHref.textContent='';
+
+  if (apiKey.length > 0) {
+    (<HTMLButtonElement>document.getElementById('save')).disabled=true;
     var allComponents = (<HTMLInputElement>document.getElementById('everything')).checked;
-    parent.postMessage({ pluginMessage: { type: 'SAVE', everything: allComponents } }, '*');
+    parent.postMessage({ pluginMessage: { type: 'SAVE', everything: allComponents, applitoolsApiKey: apiKey } }, '*');
   }
   else {
     parent.postMessage({ pluginMessage: { type: 'KEY_OR_URL_ERROR' } }, '*')
@@ -28,12 +47,22 @@ document.getElementById('cancel').onclick = () => {
 
 onmessage = event => {
   let message = event.data.pluginMessage;
-   
+  if (message.applitoolsApiKey) {
+    (<HTMLInputElement>document.getElementById('key')).value = message.applitoolsApiKey
+  }
+  if (message.dupResults) {
+    console.log("duplicates found: " + message.dupResults.designs.length);
+    console.log("Frame names must be unique for each resoolution.");
+    for (let result of message.dupResults.designs) {
+      console.log(`Skipping duplicate frame: ${result.name}, width ${result.width}, height ${result.height}`);
+    }
+  }
   if (message.results) {
     console.log("Designs Collected");
     (async () => {
       let batchUrls;
       let statusCounter = {}
+      console.log('For any implemention to design comparison please share the details below with your developer:');
       await upload(message.results).then(function (tresults) {
   
         try{
@@ -46,10 +75,16 @@ onmessage = event => {
         } catch {
           batchUrls = []
           statusCounter = {}
+        } finally {
+          (<HTMLButtonElement>document.getElementById('save')).disabled=false;
         }
         
-        console.log(`\nBatch Url: ${batchUrls.join('')}\n`)
-        console.log(`Test Results: ${JSON.stringify(statusCounter)}\n`)
+        console.log(`\nBatch Url: ${batchUrls.join('')}\n`);
+        console.log(`Test Results: ${JSON.stringify(statusCounter)}\n`);
+        let resultsHref = <HTMLAnchorElement>document.getElementById("results-url");
+        resultsHref.href=batchUrls.join('');
+        resultsHref.textContent=batchUrls.join('');
+        resultsHref.style.display='inherit';
 
         //debugger;
         parent.postMessage({ pluginMessage: { type: 'UPLOAD_COMPLETE' } }, '*')
@@ -97,14 +132,15 @@ async function upload(results) {
   // }
 
   let projectName = `Figma - ${results.project}`
-
+  console.log(`Application Name: ${projectName}`);
   configuration.setBatch(new BatchInfo(projectName));
+  configuration.setAgentId("figma-plugin/" + VERSION);
   
   return await Promise.all(
     
     await results.designs.map(async (design) => {
       let testResults;
-      let testName = `${design.name} - ${design.id}`
+      let testName = `${design.name}`
 
       const eyes = new Eyes()
  
@@ -119,7 +155,9 @@ async function upload(results) {
           }
 
           eyes.setHostOS(`${projectName}`)
-          eyes.setBaselineEnvName(`${testName}`)
+          let baselineEnvName = `${testName}_${design.width}_${design.height}`;
+          eyes.setBaselineEnvName(`${baselineEnvName}`);
+          console.log(`TestName: ${testName}, Baseline Environment Name: ${baselineEnvName}`);
           await eyes.open(projectName, testName, { width: design.width, height: design.height });
           await eyes.check(testName, Target.image(Buffer.from(design.bytes)));
 
@@ -127,7 +165,7 @@ async function upload(results) {
 
           //console.log(testResults);
       } catch (error) {
-          console.log(error); //Doesn't report an error...
+          console.log(error.message); //Doesn't report an error...
           await eyes.abortIfNotClosed();
       }
       
