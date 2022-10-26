@@ -154,7 +154,7 @@ async function upload(results) {
             eyes.setProxy(proxyUrl);
           }
 
-          eyes.setHostOS(`${projectName}`)
+          eyes.setHostApp(`${projectName}`)
           let baselineEnvName = `${testName}_${design.width}_${design.height}`;
           eyes.setBaselineEnvName(`${baselineEnvName}`);
           console.log(`TestName: ${testName}, Baseline Environment Name: ${baselineEnvName}`);
