@@ -131,10 +131,11 @@ async function upload(results) {
   //   configuration.setProxy(new ProxySettings('http://127.0.0.1:8080', undefined, undefined, true))
   // }
 
-  let projectName = `Figma - ${results.project}`
+  let projectName = `${results.project}`
+  let figmaAgentString = "figma-plugin/" + VERSION;
   console.log(`Application Name: ${projectName}`);
   configuration.setBatch(new BatchInfo(projectName));
-  configuration.setAgentId("figma-plugin/" + VERSION);
+  configuration.setAgentId(figmaAgentString);
   
   return await Promise.all(
     
@@ -154,7 +155,7 @@ async function upload(results) {
             eyes.setProxy(proxyUrl);
           }
 
-          eyes.setHostApp(`${projectName}`)
+          eyes.setHostApp(`${figmaAgentString}`)
           let baselineEnvName = `${testName}_${design.width}_${design.height}`;
           eyes.setBaselineEnvName(`${baselineEnvName}`);
           console.log(`TestName: ${testName}, Baseline Environment Name: ${baselineEnvName}`);
