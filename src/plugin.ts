@@ -1,3 +1,4 @@
+import { ok } from "assert";
 import { debug } from "console"
 
 const { children, selection } = figma.currentPage
@@ -8,9 +9,12 @@ const projectName = figma.root.name
 
 figma.ui.onmessage = async (msg) => {
   switch (msg.type) {
+    case 'ADVANCED':
+      console.log('ADVANCED');
+
     case 'SAVE':
       figma.notify("Getting Designs")
-      
+      figma.clientStorage.setAsync('applitoolsApiKey', msg.applitoolsApiKey)
       getDesigns(msg.everything)
       break
     case 'CANCEL':
@@ -23,27 +27,48 @@ figma.ui.onmessage = async (msg) => {
       console.log("Upload Complete");
       break
     case 'KEY_OR_URL_ERROR':
-      figma.notify("Please enter your Applitools Server Url and Api Key!")
+      figma.notify("Please enter your Applitools Server Url and Api Key!", {
+        error: true,
+        button: {
+          text: 'OK',
+          action: () => true
+        }
+      })
       break
   }
 }
 
-async function collectDesigns(node, results, everything) {
+async function collectDesigns(node, results, dupResults, everything) {
   const exportSettings: ExportSettingsImage = { format: "PNG", suffix: '', constraint: { type: "SCALE", value: 1 }, contentsOnly: false } //contentsOnly: everything ??
   //let parentName = node.parent.name;
   const { id, name, width, height } = node
   const bytes = await node.exportAsync(exportSettings)
-  results.designs.push({
-    id,
-    name,
-    width,
-    height,
-    bytes
-  })
+  
+
+  const found = results.designs.some(el => el.name === name && el.width=== width && el.height === height);
+
+  if (found) {
+    dupResults.designs.push({
+      id,
+      name,
+      width,
+      height,
+      bytes
+    })  } else {
+    results.designs.push({
+      id,
+      name,
+      width,
+      height,
+      bytes
+    })
+  }
+
 }
 
 async function getDesigns(everything=false) {
   let results = { project: projectName, designs: []}
+  let dupResults = { project: projectName, designs: []}
   
   if (selection.length > 0) {
     //https://www.figma.com/plugin-docs/api/properties/PageNode-selection/
@@ -53,23 +78,32 @@ async function getDesigns(everything=false) {
   }
 
   for (let node of nodes) {
+    console.log('collecting node ' + node.name)
     if(everything) {
-      await collectDesigns(node, results, everything)
+      await collectDesigns(node, results, dupResults, everything)
     } else {
       if (node.type === "FRAME") {
-        await collectDesigns(node, results, everything)
+        await collectDesigns(node, results, dupResults, everything)
       }
     }
   }
 
   figma.notify("Uploading Designs to Applitools")
-  figma.ui.postMessage({ results })
+  figma.ui.postMessage({ results, dupResults })
 }
 
 switch(figma.command) {
   case "settings":
     figma.showUI(__html__);
     figma.ui.resize(500,500);
+    (async () => {
+      try {
+        let applitoolsApiKey = await figma.clientStorage.getAsync('applitoolsApiKey')
+        figma.ui.postMessage({applitoolsApiKey});
+      } catch (e) {
+          // Deal with the fact the chain failed
+      }
+    })();
 
    // console.log("settings");
     // This shows the HTML page in "ui.html".
