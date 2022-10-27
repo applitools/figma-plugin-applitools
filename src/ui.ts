@@ -134,7 +134,11 @@ async function upload(results) {
   let projectName = `${results.project}`
   let figmaAgentString = "figma-plugin/" + VERSION;
   console.log(`Application Name: ${projectName}`);
-  configuration.setBatch(new BatchInfo(projectName));
+  
+  const batchInfo = new BatchInfo(projectName);
+  batchInfo.setNotifyOnCompletion(true);
+  configuration.setBatch(batchInfo);
+
   configuration.setAgentId(figmaAgentString);
   
   return await Promise.all(
