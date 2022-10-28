@@ -7,11 +7,11 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomas-lowry/figma-plugin-ds@master/dist/figma-plugin-ds.css">
     </head>
 
-    <body class="m-small" style="border: solid 5px #00a096">
+    <body class="m-small" style="border: solid 5px #00a096;margin: 0px; padding: 10px">
 
         <div class="onboarding-tip" style="justify-content: center">
             <div class="icon icon--effects"></div>
-            <div class="onboarding-tip__msg">About Applitools</div>
+            <div class="onboarding-tip__msg">Figma Plugin for Applitools</div>
         </div>
        
         <div class="input">
@@ -26,6 +26,18 @@
         </div>
         <div>&nbsp;</div>
         <div id="advanced-section" style="display:none" style="width: 100%">
+            <div class="input">
+                Override OS (experimental): <input type="input" id="os" class="input__field" placeholder="Linux" style="width: 50%">
+            </div>
+
+            <div class="input">
+                Override Browser (experimental): <input type="input" id="browser" class="input__field" placeholder="Chrome 106.0" style="width: 50%">
+            </div>
+
+            <div class="input">
+                Export additional sizes - comma separated widths (experimental): <input type="input" id="widths" class="input__field" placeholder="375,414" style="width: 50%">
+            </div>
+
             <div class="input">
                 Enter Proxy URL: <input type="input" id="proxy" class="input__field" placeholder="Your Proxy URL 'Optional'" style="width: 100%">
             </div>
@@ -60,18 +72,23 @@
                 </div>
             </ul>
         </div>
-        <ul style="list-style: none; display: flex; align-items: center; justify-content: center">
+        <ul style="list-style: none; display: flex; align-items: center; justify-content: center;margin-top: 10px;">
             <li style="margin: auto"><button id="save" class='button button--primary'>Export</button></li>
             <li style="margin: auto"><button id="cancel" class='button button--primary-destructive'>Cancel</button></li>
         </ul>
-        
-        <div>
+
+
+        <textarea rows=10 class="textarea" id="console" style="border: solid 1px rgb(0, 0, 0); width: 100%; max-width: 100%; resize: none; overflow-y: scroll;;padding-top: 10px" disabled></textarea>
+                
+        <div id="results-section" style="display:none;padding-top: 10px;">
             <label for="results-url">Results:</label>
             <a id="results-url" class="type--small" href="" target="_blank"></a>
         </div>
-
-        <textarea rows=10 class="textarea" id="console" style="border: solid 2px rgb(0, 0, 0); width: 100%; max-width: 100%; resize: none; overflow-y: scroll;" disabled>Console</textarea>
-        
+        <div id="baseline-list-section" style="display:none;padding-top: 10px;">
+            For implemention to design comparison, please share the details below with your developer(s):
+            <ul id="baseline-list" style="list-style-type:none;font-size: 12px;padding-left: 10px; border: solid 1px rgb(0, 0, 0)">
+            </ul>
+        </div>
         <script src="https://cdn.jsdelivr.net/gh/thomas-lowry/figma-plugin-ds/dist/iife/figma-plugin-ds.js"></script>
         <script>
 

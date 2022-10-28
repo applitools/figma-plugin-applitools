@@ -16,8 +16,6 @@ module.exports = (env, argv) =>  ({
   entry: {
     ui: './src/ui.ts', // The entry point for your UI code
     plugin: './src/plugin.ts', // The entry point for your plugin code
-    settings: './src/settings.ts', 
-    //applitools: './src/applitools.ts'
   },
   output: {
     filename: '[name].js',

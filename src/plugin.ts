@@ -10,12 +10,10 @@ const projectName = figma.root.name
 figma.ui.onmessage = async (msg) => {
   switch (msg.type) {
     case 'ADVANCED':
-      console.log('ADVANCED');
-
     case 'SAVE':
       figma.notify("Getting Designs")
       figma.clientStorage.setAsync('applitoolsApiKey', msg.applitoolsApiKey)
-      getDesigns(msg.everything)
+      getDesigns(msg.everything, msg.arrWidths)
       break
     case 'CANCEL':
       figma.closePlugin()
@@ -38,12 +36,9 @@ figma.ui.onmessage = async (msg) => {
   }
 }
 
-async function collectDesigns(node, results, dupResults, everything) {
-  const exportSettings: ExportSettingsImage = { format: "PNG", suffix: '', constraint: { type: "SCALE", value: 1 }, contentsOnly: false } //contentsOnly: everything ??
+async function collectDesigns(node, results, dupResults, everything, arrWidths) {
   //let parentName = node.parent.name;
   const { id, name, width, height } = node
-  const bytes = await node.exportAsync(exportSettings)
-  
 
   const found = results.designs.some(el => el.name === name && el.width=== width && el.height === height);
 
@@ -52,21 +47,34 @@ async function collectDesigns(node, results, dupResults, everything) {
       id,
       name,
       width,
-      height,
-      bytes
+      height
     })  } else {
-    results.designs.push({
-      id,
-      name,
-      width,
-      height,
-      bytes
-    })
-  }
 
+    let viewportArr: {width: number, height: number}[] = [{width:width, height:height}];
+    if (arrWidths && arrWidths.length > 0) {
+      for (const extraWidth of arrWidths) {
+        console.log('extra width ' + extraWidth + ' width ' + width + ' height: ' + height)
+
+        let calculatedHeight = Math.round(extraWidth * (height/width));
+        viewportArr.push({width:extraWidth, height: calculatedHeight});
+        console.log('test name: ' + name + ' calclulated viewport - width: ' + extraWidth + ' height: ' + calculatedHeight)
+      }
+    }
+    for(const viewport of viewportArr) {
+      const exportSettings: ExportSettingsImage = { format: "PNG", suffix: '', constraint: { type: "WIDTH", value: viewport.width }, contentsOnly: false } //contentsOnly: everything ??
+      const bytes = await node.exportAsync(exportSettings)
+      results.designs.push({
+        id,
+        name,
+        width: viewport.width,
+        height: viewport.height,
+        bytes
+      })
+    }
+  }
 }
 
-async function getDesigns(everything=false) {
+async function getDesigns(everything=false, arrWidths) {
   let results = { project: projectName, designs: []}
   let dupResults = { project: projectName, designs: []}
   
@@ -78,12 +86,11 @@ async function getDesigns(everything=false) {
   }
 
   for (let node of nodes) {
-    console.log('collecting node ' + node.name)
     if(everything) {
-      await collectDesigns(node, results, dupResults, everything)
+      await collectDesigns(node, results, dupResults, everything, arrWidths)
     } else {
       if (node.type === "FRAME") {
-        await collectDesigns(node, results, dupResults, everything)
+        await collectDesigns(node, results, dupResults, everything, arrWidths)
       }
     }
   }
