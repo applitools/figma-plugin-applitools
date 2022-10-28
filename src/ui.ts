@@ -37,7 +37,9 @@ document.getElementById('save').onclick = (event) => {
   if (apiKey.length > 0) {
     (<HTMLButtonElement>document.getElementById('save')).disabled=true;
     var allComponents = (<HTMLInputElement>document.getElementById('everything')).checked;
-    parent.postMessage({ pluginMessage: { type: 'SAVE', everything: allComponents, applitoolsApiKey: apiKey } }, '*');
+    const widths = (<HTMLInputElement>document.getElementById('widths')).value;
+    const arrWidths = parseWidths(widths)
+    parent.postMessage({ pluginMessage: { type: 'SAVE', everything: allComponents, applitoolsApiKey: apiKey, arrWidths: arrWidths } }, '*');
   }
   else {
     parent.postMessage({ pluginMessage: { type: 'KEY_OR_URL_ERROR' } }, '*')
@@ -56,9 +58,9 @@ onmessage = event => {
   if (message.applitoolsApiKey) {
     (<HTMLInputElement>document.getElementById('key')).value = message.applitoolsApiKey
   }
-  if (message.dupResults) {
+  if (message.dupResults && message.dupResults.designs.length) {
     console.log("duplicates found: " + message.dupResults.designs.length);
-    console.log("Frame names must be unique for each resoolution.");
+    console.log("Frame names must be unique for each resoolution/viewport.");
     for (let result of message.dupResults.designs) {
       console.log(`Skipping duplicate frame: ${result.name}, width ${result.width}, height ${result.height}`);
     }
@@ -85,7 +87,8 @@ onmessage = event => {
             var key = JSON.stringify(obj)
             statusCounter[key] = (statusCounter[key] || 0) + 1
           })
-        } catch {
+        } catch(error) {
+          console.log(error)
           batchUrls = []
           statusCounter = {}
         } finally {
@@ -116,6 +119,23 @@ onmessage = event => {
   }
 }
 
+function parseWidths(widths) {
+  if (widths && widths.length > 0) {
+    try {
+      return widths.split(',').map(element => {
+        if (isNaN(element)) {
+          return null;
+        } else {
+          return Number(element);
+        }
+      });
+    } catch (error) {
+      console.log('Unable to parse widths... skipping exporting extra images');
+    }
+  }
+  return [];
+}
+
 async function upload(results, baselineList, projectName) {
   
   console.log('Uploading to Applitools');
@@ -140,19 +160,6 @@ async function upload(results, baselineList, projectName) {
     level: eval('AccessibilityLevel.' + aLevel), 
     guidelinesVersion: eval('AccessibilityGuidelinesVersion.WCAG_' + wcag)
   });
-
-  // if ((<HTMLInputElement>document.getElementById('proxy')).value) {
-  //   var proxyUrl = (<HTMLInputElement>document.getElementById('proxy')).value
-  //   let proxyInfo = {
-  //     url: proxyUrl,
-  //     username: null, 
-  //     password: null, 
-  //     isHttpOnly: true
-  //   };
-  //   console.log("Setting Proxy: " + proxyInfo)
-  //   configuration.setProxy(proxyInfo);
-  //   configuration.setProxy(new ProxySettings('http://127.0.0.1:8080', undefined, undefined, true))
-  // }
 
   let figmaAgentString = "figma-plugin/" + VERSION;
   console.log(`Application Name: ${projectName}`);
@@ -182,6 +189,7 @@ async function upload(results, baselineList, projectName) {
 
           const os = (<HTMLInputElement>document.getElementById('os')).value;
           const browser = (<HTMLInputElement>document.getElementById('browser')).value;
+
           eyes.setHostApp(`${figmaAgentString}`)
 
           if (browser && browser.length >= 0) {
@@ -191,7 +199,6 @@ async function upload(results, baselineList, projectName) {
             eyes.setHostOS(`${os}`)
           }
           
-
           baselineList.push(`TestName: ${testName}, Baseline Environment Name: ${baselineEnvName}`);
           await eyes.open(projectName, testName, { width: design.width, height: design.height });
           await eyes.check(testName, Target.image(Buffer.from(design.bytes)));
