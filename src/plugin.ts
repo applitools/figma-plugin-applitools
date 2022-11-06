@@ -62,6 +62,9 @@ async function collectDesigns(node, results, dupResults, everything, arrWidths) 
     }
     for(const viewport of viewportArr) {
       const exportSettings: ExportSettingsImage = { format: "PNG", suffix: '', constraint: { type: "WIDTH", value: viewport.width }, contentsOnly: false } //contentsOnly: everything ??
+      // const exportSettings: ExportSettingsImage = { format: "PNG", suffix: '', constraint: { type: "SCALE", value: 1 }, contentsOnly: false } //contentsOnly: everything ??
+      
+
       const bytes = await node.exportAsync(exportSettings)
       results.designs.push({
         id,

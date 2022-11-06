@@ -12,16 +12,23 @@ document.getElementById('advanced').onclick = (event) => {
   event.preventDefault();
   const hideShow = <HTMLSpanElement>document.getElementById('hideShow');
   const advancedSection = <HTMLDivElement>document.getElementById('advanced-section');
-  if (hideShow && hideShow.textContent === 'Show') {
-    hideShow.textContent = 'Hide'
+  if (hideShow && hideShow.textContent === 'More Settings') {
+    hideShow.textContent = 'Hide Settings'
     advancedSection.style.display='inherit';
   } else {
-    hideShow.textContent = 'Show'
+    hideShow.textContent = 'More Settings'
     advancedSection.style.display='none';
   }
 }
 
 document.getElementById('save').onclick = (event) => {
+    var randomColor = Math.floor(Math.random()*16777215).toString(16);
+    document.getElementById('save').style.backgroundColor="#5A5A5A";
+    document.getElementById('save').style['cursor'] = "not-allowed";
+    document.getElementById('save').onclick = null;
+    document.getElementById('save').attributes['onclick'] = null;
+    document.getElementById('save').attributes['disabled'] = 'disabled';
+
   let apiKey = (<HTMLInputElement>document.getElementById('key')).value;
   let resultsHref = <HTMLAnchorElement>document.getElementById("results-url");
   resultsHref.style.display='none';
@@ -35,7 +42,13 @@ document.getElementById('save').onclick = (event) => {
   (<HTMLDivElement>document.getElementById('baseline-list-section')).style.display='none';
 
   if (apiKey.length > 0) {
-    (<HTMLButtonElement>document.getElementById('save')).disabled=true;
+    document.getElementById('save').style.backgroundColor='#5A5A5A';
+    document.getElementById('save').onclick = null;
+    document.getElementById('save').attributes['onclick'] = null;
+    document.getElementById('save').attributes['disabled'] = 'disabled';
+
+    
+
     var allComponents = (<HTMLInputElement>document.getElementById('everything')).checked;
     const widths = (<HTMLInputElement>document.getElementById('widths')).value;
     const arrWidths = parseWidths(widths)
@@ -92,7 +105,7 @@ onmessage = event => {
           batchUrls = []
           statusCounter = {}
         } finally {
-          (<HTMLButtonElement>document.getElementById('save')).disabled=false;
+          // (<HTMLButtonElement>document.getElementById('save')).disabled=false;
         }
         
         console.log(`\nBatch Url: ${batchUrls.join('')}\n`);
@@ -137,29 +150,46 @@ function parseWidths(widths) {
 }
 
 async function upload(results, baselineList, projectName) {
-  
+  // var idx = 1;
   console.log('Uploading to Applitools');
   const configuration = new Configuration();
   configuration.setApiKey((<HTMLInputElement>document.getElementById('key')).value);
   
+  // console.log("Eran - " + idx++);
+
   var serverUrl = (<HTMLInputElement>document.getElementById('url')).value
   if (serverUrl) {
     configuration.setServerUrl(serverUrl);
   }
 
+  // console.log("Eran - " + idx++);
+
   var setMatchLevel = (<HTMLInputElement>document.getElementById('matchLevel')).value
-  configuration.setMatchLevel(eval('MatchLevel.' + setMatchLevel));
+  if(setMatchLevel === null || setMatchLevel === "")
+  {}
+  else
+    configuration.setMatchLevel(eval('MatchLevel.' + setMatchLevel));
+
+  // console.log("Eran - " + idx++);
 
   var saveFailedTests = (<HTMLInputElement>document.getElementById('saveFailedTests')).checked;  
   configuration.setSaveFailedTests(saveFailedTests);
 
+  // console.log("Eran - " + idx++);
+
   var contrastLevel = (<HTMLInputElement>document.getElementById('contrastLevel')).value
-  var aLevel = contrastLevel.split(' ')[0];
-  var wcag = contrastLevel.split(' ')[1];
-  configuration.setAccessibilityValidation({
-    level: eval('AccessibilityLevel.' + aLevel), 
-    guidelinesVersion: eval('AccessibilityGuidelinesVersion.WCAG_' + wcag)
-  });
+  
+  if(contrastLevel === null || contrastLevel === "")
+  {}
+  else
+  {
+    var aLevel = contrastLevel.split(' ')[0];
+    var wcag = contrastLevel.split(' ')[1];
+    configuration.setAccessibilityValidation({
+      level: eval('AccessibilityLevel.' + aLevel), 
+      guidelinesVersion: eval('AccessibilityGuidelinesVersion.WCAG_' + wcag)
+    });
+  }
 
   let figmaAgentString = "figma-plugin/" + VERSION;
   console.log(`Application Name: ${projectName}`);
@@ -168,13 +198,14 @@ async function upload(results, baselineList, projectName) {
   batchInfo.setNotifyOnCompletion(true);
   configuration.setBatch(batchInfo);
 
-  configuration.setAgentId(figmaAgentString);
-  
+  configuration.setAgentId(figmaAgentString);  
+
   return await Promise.all(
     
     await results.designs.map(async (design) => {
       let testResults;
       let testName = `${design.name}`
+      // console.log("Eran - Build Eyes");
 
       const eyes = new Eyes()
  
