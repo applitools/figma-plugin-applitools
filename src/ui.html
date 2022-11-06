@@ -1,6 +1,9 @@
 <!-- https://codepen.io/ainalem/pen/GRqPwoz -->
 <!-- https://github.com/thomas-lowry/figma-plugin-ds -->
 <!-- https://forum.figma.com/t/linking-css-to-ui-html/5347 -->
+
+<!-- npx webpack --watch -->
+
 <!DOCTYPE html>
     <head>
         <meta charset="utf-8">
@@ -37,7 +40,7 @@
 .subtitle {
   color: #eee;
   font-family: sans-serif;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
   margin-top: 10px;
   text-align: center;
@@ -79,7 +82,7 @@
   top: -20px;
   transform: translateY(0);
   transition: transform 200ms;
-  width: 120px;
+  /*width: 220px;*/
 }
 
 .cut-short {
@@ -222,8 +225,8 @@ a:active {
 .terminal {
   width:100%;
   /*height:100%;*/
-  background-color:black;
-  color:#66cc00;
+  background-color:#303245;
+  color:white;
   font-size:12px;
 }
 
@@ -262,8 +265,8 @@ a:active {
   margin: 0;
   padding: 0;
   display: block;
-  font-weight: 600;
-  font-size: 1.2rem;
+  /*font-weight: 600;*/
+  font-size: 1rem;
   line-height: 1.3rem;
   margin-bottom: 1.618 rem;
 }
@@ -371,6 +374,59 @@ small.cretits {
   color: rgba(0, 0, 0, 0.8);
 }
 
+/*
+.collapsible {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.active, .collapsible:hover {
+  background-color: #ccc;
+}*/
+
+button.accordion {
+    background-color: #303245;
+    color: white;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+}
+
+button.accordion.active, button.accordion:hover {
+    background-color: #454863;
+}
+
+button.accordion:after {
+    content: '\002B';
+    color: white;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+}
+
+button.accordion.active:after {
+    content: "\2212";
+}
+
+/* Style the collapsible content. Note: hidden by default */
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #303245;
+}
+
     </style>
     <body style="margin: 0px; padding: 10px">
          <div class="form">
@@ -378,13 +434,13 @@ small.cretits {
        
         <div class="input-container ic1">
             <input id="key" class="input" type="text" placeholder=" " />
-            <div class="cut"></div>
+            <div class="cut" style="width: 130px;"></div>
             <label for="key" class="placeholder">Applitools API Key</label>
         </div>
 
         <div class="input-container ic1">
             <input id="url" class="input" value="https://eyesapi.applitools.com" type="text" placeholder=" " />
-            <div class="cut"></div>
+            <div class="cut" style="width: 130px;"></div>
             <label for="url" class="placeholder">Eyes Server URL</label>
         </div>
 
@@ -401,54 +457,19 @@ small.cretits {
 
         <div>&nbsp;</div>
 
-        <a href="#" id="advanced"><span id="hideShow">More Settings</a>
+        <!-- <a href="#" id="advanced"><span id="hideShow">More Settings</a> -->
+        <button type="button" id="additional_settings" class="accordion">Additional Settings</button>
 
-        <div>&nbsp;</div>
-
-        <div id="advanced-section" style="display:none;" style="width: 100%">
-            <!-- <div class="input">
-                Override OS (experimental): <input type="input" id="os" class="input__field" placeholder="Linux" style="width: 50%">
-            </div> -->
-
-            <div class="input-container ic1">
-                <input id="os" class="input" type="text" placeholder=" " />
-                <div class="cut"></div>
-                <label for="os" class="placeholder">Override OS (experimental)</label>
-            </div>
-
-            <!-- <div class="input">
-                Override Browser (experimental): <input type="input" id="browser" class="input__field" placeholder="Chrome 106.0" style="width: 50%">
-            </div> -->
-
-            <div class="input-container ic1">
-                <input id="browser" class="input" type="text" placeholder=" " />
-                <div class="cut"></div>
-                <label for="browser" class="placeholder">Override Browser (experimental)</label>
-            </div>
-
-            <!-- <div class="input">
-                Export additional sizes - comma separated widths (experimental): <input type="input" id="widths" class="input__field" placeholder="375,414" style="width: 50%">
-            </div> -->
-
-            <div class="input-container ic1">
-                <input id="widths" class="input" type="text" placeholder=" " />
-                <div class="cut"></div>
-                <label for="widths" class="placeholder">Export additional sizes - comma separated widths (experimental)</label>
-            </div>
-
-           <!--  <div class="input">
-                Enter Proxy URL: <input type="input" id="proxy" class="input__field" placeholder="Your Proxy URL 'Optional'" style="width: 100%">
-            </div> -->
+        <div class="content" id="advanced-section" style="background-color: #15172b; width: 100%">
 
             <div class="input-container ic1">
                 <input id="proxy" class="input" type="text" placeholder=" " />
-                <div class="cut"></div>
+                <div class="cut" style="width: 90px;"></div>
                 <label for="proxy" class="placeholder">Proxy URL</label>
             </div>
 
             <div>&nbsp;</div>
 
-            <!-- <label for="matchLevel">Select Match Level:</label> -->
             <div class="custom-select">
                 <select id="matchLevel">
                     <option value="" >Select Match Level</option>
@@ -461,7 +482,6 @@ small.cretits {
 
             <div>&nbsp;</div>
 
-            <!-- <label for="contrastLevel">Select Contrast Level:</label> -->
             <div class="custom-select">
                 <select id="contrastLevel">
                     <option value="" >Select Contrast Level</option>
@@ -485,20 +505,26 @@ small.cretits {
                 <input type="checkbox" id="saveFailedTests"> 
                 <label for="saveFailedTests" title="Auto Accept Baselines" class="checkbox-right"></label>
             </fieldset>
-            
-           <!--  <label for="switches">Options:</label>
-            <ul id="switches" style="list-style: none; display: flex; margin: auto">
-                
-                <div class="switch">
-                    <input class="switch__toggle" type="checkbox" id="everything">
-                    <label class="switch__label" for="everything">Include Components</label>
-                </div>
-                
-                <div class="switch">
-                    <input class="switch__toggle" type="checkbox" id="saveFailedTests">
-                    <label class="switch__label" for="saveFailedTests">Auto Accept unresolved/failed</label>
-                </div>
-            </ul>  -->
+
+            <div class="subtitle">Experimental Options</div>
+           
+            <div class="input-container ic1">
+                <input id="os" class="input" type="text" placeholder=" " />
+                <div class="cut" style="width: 135px;"></div>
+                <label for="os" class="placeholder">OS Name Override</label>
+            </div>
+
+            <div class="input-container ic1">
+                <input id="browser" class="input" type="text" placeholder=" " />
+                <div class="cut" style="width: 165px;"></div>
+                <label for="browser" class="placeholder">Browser Name Override</label>
+            </div>
+
+            <div class="input-container ic1">
+                <input id="widths" class="input" type="text" placeholder=" " />
+                <div class="cut" style="width: 220px;"></div>
+                <label for="widths" class="placeholder">Additional Widths (e.g. 800,1200)</label>
+            </div>
         </div>
         <ul style="list-style: none; display: flex; align-items: center; justify-content: center;margin-top: 10px;">
             <li style="margin: auto"><button id="save" class='submit'>Export</button></li>
@@ -506,18 +532,60 @@ small.cretits {
         </ul>
 
 
-        <textarea rows=10 class="terminal" id="console" style="border: solid 1px rgb(0, 0, 0); width: 100%; max-width: 100%; resize: none; overflow-y: scroll;;padding-top: 10px" disabled></textarea>
+        <textarea rows=10 class="terminal" id="console" style="display:  none; border: solid 1px rgb(0, 0, 0); width: 100%; max-width: 100%; resize: none; overflow-y: scroll;;padding-top: 10px" disabled></textarea>
                 
-        <div id="results-section" style="display:none;padding-top: 10px;">
-            <label for="results-url">Results:</label>
-            <a id="results-url" class="type--small" href="" target="_blank"></a>
+        <div id="results-section" style="color: white; display:none;padding-top: 10px;">
+            <!-- <label for="results-url">Results:</label> -->
+            <a id="results-url" href="" target="_blank">See Screenshots</a>
+            <button style="width: 200px;" id="opendashboard" class='submit' onclick="">Open Applitools</button>
         </div>
-        <div id="baseline-list-section" style="display:none;padding-top: 10px;">
-            For implemention to design comparison, please share the details below with your developer(s):
-            <ul id="baseline-list" style="list-style-type:none;font-size: 12px;padding-left: 10px; border: solid 1px rgb(0, 0, 0)">
+
+        <button id="baseline-list-section" type="button" class="accordion" style="display:none;">Developer Configuration</button>
+
+        <div class="content" style="color:  white; padding-top: 10px;">
+            For Design vs Production comparison, please share the following information with your developers:
+            <ul id="baseline-list" style="list-style-type:none;font-size: 12px;padding-left: 10px; border: solid 1px rgb(255, 255, 255)">
             </ul>
         </div>
+
+        <div>&nbsp;</div>
+
+       <!-- 
+        <div id="baseline-list-section" style="color:  white; display:none;padding-top: 10px;">
+            For implemention to design comparison, please share the details below with your developer(s):
+            <ul id="baseline-list" style="list-style-type:none;font-size: 12px;padding-left: 10px; border: solid 1px rgb(255, 255, 255)">
+            </ul>
+        </div> 
+    -->
     </form>
+
+    <script>
+    var coll = document.getElementById("additional_settings");
+    var i;
+
+      coll.addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+          content.style.display = "none";
+        } else {
+          content.style.display = "block";
+        }
+      });
+
+    var coll2 = document.getElementById("baseline-list-section");
+
+      coll2.addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+          content.style.display = "none";
+        } else {
+          content.style.display = "block";
+          window.scrollBy(0,500);
+        }
+      });
+    </script>
 
         <script src="https://cdn.jsdelivr.net/gh/thomas-lowry/figma-plugin-ds/dist/iife/figma-plugin-ds.js"></script>
         <script>

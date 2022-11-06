@@ -8,27 +8,12 @@ const {
 } = require('@applitools/eyes-images')
 
 const VERSION = '1.0';
-document.getElementById('advanced').onclick = (event) => {
-  event.preventDefault();
-  const hideShow = <HTMLSpanElement>document.getElementById('hideShow');
-  const advancedSection = <HTMLDivElement>document.getElementById('advanced-section');
-  if (hideShow && hideShow.textContent === 'More Settings') {
-    hideShow.textContent = 'Hide Settings'
-    advancedSection.style.display='inherit';
-  } else {
-    hideShow.textContent = 'More Settings'
-    advancedSection.style.display='none';
-  }
-}
 
 document.getElementById('save').onclick = (event) => {
-    var randomColor = Math.floor(Math.random()*16777215).toString(16);
-    document.getElementById('save').style.backgroundColor="#5A5A5A";
-    document.getElementById('save').style['cursor'] = "not-allowed";
-    document.getElementById('save').onclick = null;
-    document.getElementById('save').attributes['onclick'] = null;
-    document.getElementById('save').attributes['disabled'] = 'disabled';
 
+  (<HTMLDivElement>document.getElementById('console')).style.display='inherit';
+  window.scrollBy(0,500);
+  
   let apiKey = (<HTMLInputElement>document.getElementById('key')).value;
   let resultsHref = <HTMLAnchorElement>document.getElementById("results-url");
   resultsHref.style.display='none';
@@ -42,13 +27,13 @@ document.getElementById('save').onclick = (event) => {
   (<HTMLDivElement>document.getElementById('baseline-list-section')).style.display='none';
 
   if (apiKey.length > 0) {
-    document.getElementById('save').style.backgroundColor='#5A5A5A';
+    document.getElementById('save').style.backgroundColor="#5A5A5A";
+    document.getElementById('save').style['cursor'] = "not-allowed";
     document.getElementById('save').onclick = null;
     document.getElementById('save').attributes['onclick'] = null;
     document.getElementById('save').attributes['disabled'] = 'disabled';
 
     
-
     var allComponents = (<HTMLInputElement>document.getElementById('everything')).checked;
     const widths = (<HTMLInputElement>document.getElementById('widths')).value;
     const arrWidths = parseWidths(widths)
@@ -67,6 +52,7 @@ document.getElementById('cancel').onclick = () => {
 }
 
 onmessage = event => {
+
   let message = event.data.pluginMessage;
   if (message.applitoolsApiKey) {
     (<HTMLInputElement>document.getElementById('key')).value = message.applitoolsApiKey
@@ -85,7 +71,7 @@ onmessage = event => {
 
     let baselnieList = <HTMLUListElement>document.getElementById('baseline-list');
     var li = document.createElement('li'); 
-    li.innerHTML = 'Application name ' + projectName;
+    li.innerHTML = 'Application Name: ' + projectName;
     baselnieList.appendChild(li);
 
     (async () => {
@@ -110,10 +96,12 @@ onmessage = event => {
         
         console.log(`\nBatch Url: ${batchUrls.join('')}\n`);
         console.log(`Test Results: ${JSON.stringify(statusCounter)}\n`);
-        let resultsHref = <HTMLAnchorElement>document.getElementById("results-url");
-        resultsHref.href=batchUrls.join('');
-        resultsHref.textContent=batchUrls.join('');
-        resultsHref.style.display='inherit';
+        // let resultsHref = <HTMLAnchorElement>document.getElementById("results-url");
+        // resultsHref.href=batchUrls.join('');
+        // resultsHref.textContent="See Screenshots";
+        // resultsHref.style.display='inherit';
+        let resultsHref = document.getElementById("opendashboard");
+        resultsHref.setAttribute('onclick',"window.open('"+batchUrls.join('')+"','_blank')");
 
         let baselnieList = <HTMLUListElement>document.getElementById('baseline-list');
         baselineList.forEach(function(obj) {
@@ -127,6 +115,8 @@ onmessage = event => {
         (<HTMLDivElement>document.getElementById('baseline-list-section')).style.display='inherit';
         //debugger;
         parent.postMessage({ pluginMessage: { type: 'UPLOAD_COMPLETE' } }, '*')
+
+        window.scrollBy(0,500);
       })
     })();
   }
@@ -150,19 +140,15 @@ function parseWidths(widths) {
 }
 
 async function upload(results, baselineList, projectName) {
-  // var idx = 1;
   console.log('Uploading to Applitools');
   const configuration = new Configuration();
   configuration.setApiKey((<HTMLInputElement>document.getElementById('key')).value);
   
-  // console.log("Eran - " + idx++);
 
   var serverUrl = (<HTMLInputElement>document.getElementById('url')).value
   if (serverUrl) {
     configuration.setServerUrl(serverUrl);
   }
-
-  // console.log("Eran - " + idx++);
 
   var setMatchLevel = (<HTMLInputElement>document.getElementById('matchLevel')).value
   if(setMatchLevel === null || setMatchLevel === "")
@@ -170,12 +156,8 @@ async function upload(results, baselineList, projectName) {
   else
     configuration.setMatchLevel(eval('MatchLevel.' + setMatchLevel));
 
-  // console.log("Eran - " + idx++);
-
   var saveFailedTests = (<HTMLInputElement>document.getElementById('saveFailedTests')).checked;  
   configuration.setSaveFailedTests(saveFailedTests);
-
-  // console.log("Eran - " + idx++);
 
   var contrastLevel = (<HTMLInputElement>document.getElementById('contrastLevel')).value
   
@@ -205,7 +187,6 @@ async function upload(results, baselineList, projectName) {
     await results.designs.map(async (design) => {
       let testResults;
       let testName = `${design.name}`
-      // console.log("Eran - Build Eyes");
 
       const eyes = new Eyes()
  
@@ -234,13 +215,12 @@ async function upload(results, baselineList, projectName) {
             eyes.setHostOS(`${os}`)
           }
           
-          baselineList.push(`TestName: ${testName}, Baseline Environment Name: ${baselineEnvName}`);
+          baselineList.push(`Test Name: ${testName}<br>Baseline Environment Name: ${baselineEnvName}`);
           await eyes.open(projectName, testName, { width: design.width, height: design.height });
           await eyes.check(testName, Target.image(Buffer.from(design.bytes)));
 
           testResults = await eyes.close(false);
 
-          //console.log(testResults);
       } catch (error) {
           console.log(error.message); //Doesn't report an error...
           await eyes.abortIfNotClosed();
