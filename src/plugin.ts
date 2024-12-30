@@ -12,7 +12,15 @@ figma.ui.onmessage = async (msg) => {
     case 'ADVANCED':
     case 'SAVE':
       figma.notify("Getting Designs")
-      figma.clientStorage.setAsync('applitoolsApiKey', msg.applitoolsApiKey)
+      await figma.clientStorage.setAsync('applitoolsApiKey', msg.applitoolsApiKey);
+      await figma.clientStorage.setAsync('serverUrl', msg.serverUrl);
+      // View messenger data
+      // for (const key in msg) {
+      //   if (msg.hasOwnProperty(key)) {
+      //     console.log(msg[key]);
+      //   }
+      // }
+
       getDesigns(msg.everything, msg.arrWidths)
       break
     case 'CANCEL':
@@ -25,13 +33,7 @@ figma.ui.onmessage = async (msg) => {
       console.log("Upload Complete");
       break
     case 'KEY_OR_URL_ERROR':
-      figma.notify("Please enter your Applitools Server Url and Api Key!", {
-        error: true,
-        button: {
-          text: 'OK',
-          action: () => true
-        }
-      })
+      figma.notify("Error: Please enter your Applitools Server Url and Api Key!");
       break
   }
 }
@@ -102,6 +104,12 @@ async function getDesigns(everything=false, arrWidths) {
   figma.ui.postMessage({ results, dupResults })
 }
 
+async function sendServerUrlToUI() {
+  const serverUrl = await figma.clientStorage.getAsync('serverUrl');
+  //console.log('Storage serverUrl: ' + serverUrl)
+  figma.ui.postMessage({ serverUrl });
+}
+
 switch(figma.command) {
   case "settings":
     figma.showUI(__html__);
@@ -110,14 +118,12 @@ switch(figma.command) {
       try {
         let applitoolsApiKey = await figma.clientStorage.getAsync('applitoolsApiKey')
         figma.ui.postMessage({applitoolsApiKey});
+        await sendServerUrlToUI();
       } catch (e) {
           // Deal with the fact the chain failed
       }
     })();
 
-   // console.log("settings");
-    // This shows the HTML page in "ui.html".
-    //figma.showUI(__html__);
     figma.ui.postMessage({ type: 'networkRequest' })
     break;
   case "validate":

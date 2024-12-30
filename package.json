@@ -1,5 +1,5 @@
 {
-  "name": "todo-plugin",
+  "name": "applitools-figma-plugin",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -38,7 +38,7 @@
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
-    "@applitools/eyes-images": "*",
+    "@applitools/eyes-images": "4.21.0",
     "@applitools/types": "1.5.19",
     "assert": "^2.0.0",
     "browser-process-hrtime": "^1.0.0",
@@ -62,3 +62,4 @@
     "util": "^0.12.5"
   }
 }
+
