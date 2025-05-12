@@ -1,14 +1,18 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["es5", "dom"],
+    "lib": ["es5", "dom", "es2015"],
     "baseUrl": ".",
     "typeRoots": [
       "./node_modules/@types",
       "./node_modules/@figma"
     ],
     "removeComments": true,
-    //"moduleResolution": "node"
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src"]
 }
