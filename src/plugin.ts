@@ -1,19 +1,41 @@
 import { ok } from "assert";
 import { debug } from "console"
 
+// Type definitions
+interface DesignResult {
+  id: string;
+  name: string;
+  width: number;
+  height: number;
+  bytes?: Uint8Array;
+}
+
+interface Results {
+  project: string;
+  designs: DesignResult[];
+}
+
 const { children, selection } = figma.currentPage
 //const selected = figma.currentPage.selection
 
 const projectName = figma.root.name
 //let results = { project: projectName, designs: []}
 
-figma.ui.onmessage = async (msg) => {
+figma.ui.onmessage = async (msg: { 
+  type: string; 
+  applitoolsApiKey?: string;
+  serverUrl?: string;
+  everything?: boolean;
+  arrWidths?: number[];
+}) => {
   switch (msg.type) {
     case 'ADVANCED':
     case 'SAVE':
       figma.notify("Getting Designs")
-      await figma.clientStorage.setAsync('applitoolsApiKey', msg.applitoolsApiKey);
-      await figma.clientStorage.setAsync('serverUrl', msg.serverUrl);
+      if (msg.applitoolsApiKey && msg.serverUrl) {
+        await figma.clientStorage.setAsync('applitoolsApiKey', msg.applitoolsApiKey);
+        await figma.clientStorage.setAsync('serverUrl', msg.serverUrl);
+      }
       // View messenger data
       // for (const key in msg) {
       //   if (msg.hasOwnProperty(key)) {
@@ -21,7 +43,7 @@ figma.ui.onmessage = async (msg) => {
       //   }
       // }
 
-      getDesigns(msg.everything, msg.arrWidths)
+      getDesigns(msg.everything || false, msg.arrWidths || [])
       break
     case 'CANCEL':
       figma.closePlugin()
@@ -38,11 +60,19 @@ figma.ui.onmessage = async (msg) => {
   }
 }
 
-async function collectDesigns(node, results, dupResults, everything, arrWidths) {
+async function collectDesigns(
+  node: SceneNode,
+  results: Results,
+  dupResults: Results,
+  everything: boolean,
+  arrWidths: number[]
+) {
   //let parentName = node.parent.name;
   const { id, name, width, height } = node
 
-  const found = results.designs.some(el => el.name === name && el.width=== width && el.height === height);
+  const found = results.designs.some((el: DesignResult) => 
+    el.name === name && el.width === width && el.height === height
+  );
 
   if (found) {
     dupResults.designs.push({
@@ -50,20 +80,25 @@ async function collectDesigns(node, results, dupResults, everything, arrWidths) 
       name,
       width,
       height
-    })  } else {
-
-    let viewportArr: {width: number, height: number}[] = [{width:width, height:height}];
+    });
+  } else {
+    let viewportArr: {width: number, height: number}[] = [{width, height}];
     if (arrWidths && arrWidths.length > 0) {
       for (const extraWidth of arrWidths) {
         console.log('extra width ' + extraWidth + ' width ' + width + ' height: ' + height)
 
         let calculatedHeight = Math.round(extraWidth * (height/width));
-        viewportArr.push({width:extraWidth, height: calculatedHeight});
+        viewportArr.push({width: extraWidth, height: calculatedHeight});
         console.log('test name: ' + name + ' calclulated viewport - width: ' + extraWidth + ' height: ' + calculatedHeight)
       }
     }
     for(const viewport of viewportArr) {
-      const exportSettings: ExportSettingsImage = { format: "PNG", suffix: '', constraint: { type: "WIDTH", value: viewport.width }, contentsOnly: false } //contentsOnly: everything ??
+      const exportSettings: ExportSettingsImage = { 
+        format: "PNG", 
+        suffix: '', 
+        constraint: { type: "WIDTH", value: viewport.width }, 
+        contentsOnly: false 
+      }
       // const exportSettings: ExportSettingsImage = { format: "PNG", suffix: '', constraint: { type: "SCALE", value: 1 }, contentsOnly: false } //contentsOnly: everything ??
       
 
@@ -79,16 +114,11 @@ async function collectDesigns(node, results, dupResults, everything, arrWidths) 
   }
 }
 
-async function getDesigns(everything=false, arrWidths) {
-  let results = { project: projectName, designs: []}
-  let dupResults = { project: projectName, designs: []}
+async function getDesigns(everything: boolean = false, arrWidths: number[] = []) {
+  let results: Results = { project: projectName, designs: [] }
+  let dupResults: Results = { project: projectName, designs: [] }
   
-  if (selection.length > 0) {
-    //https://www.figma.com/plugin-docs/api/properties/PageNode-selection/
-    var nodes = selection;
-  } else {
-    var nodes = children;
-  }
+  const nodes = selection.length > 0 ? selection : children;
 
   for (let node of nodes) {
     if(everything) {
@@ -120,7 +150,7 @@ switch(figma.command) {
         figma.ui.postMessage({applitoolsApiKey});
         await sendServerUrlToUI();
       } catch (e) {
-          // Deal with the fact the chain failed
+        console.error('Failed to load configuration:', e);
       }
     })();
 
