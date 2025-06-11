@@ -13,7 +13,7 @@ const {
   BatchInfo
 } = require('@applitools/eyes-images')
 
-const VERSION = '1.0';
+const VERSION = '1.2.0';
 
 document.getElementById('save').onclick = (event) => {
 

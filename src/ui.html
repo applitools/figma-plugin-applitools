@@ -8,718 +8,721 @@
     <head>
         <meta charset="utf-8">
         <title>Applitools Figma Plugin</title>
-        <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/thomas-lowry/figma-plugin-ds@master/dist/figma-plugin-ds.css"> -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     </head>
-    <style type="text/css">
+    <style>
+        :root {
+            --primary: #00b3b0;
+            --primary-dark: #00928f;
+            --accent-pink: #e1006e;
+            --navy: #183153;
+            --bg: #f7f9fb;
+            --card-bg: #fff;
+            --border: #e3e7ed;
+            --text: #183153;
+            --text-muted: #6b7a90;
+            --input-bg: #ffffff;
+            --input-border: #dbe3ed;
+            --border-radius: 12px;
+            --shadow: 0 2px 8px rgba(26, 39, 69, 0.06);
+            --spacing: 20px;
+            --header-bg: #fff;
+            --logo-fill: #1a847b;
+        }
+        body.dark-mode {
+            --primary: #00b3b0;
+            --primary-dark: #00928f;
+            --accent-pink: #e1006e;
+            --navy: #e2e2e2;
+            --bg: #181825;
+            --card-bg: #23243a;
+            --border: #2d2d44;
+            --text: #e2e2e2;
+            --text-muted: #a0a0a0;
+            --input-bg: #30324f;
+            --input-border: #3a3b4d;
+            --shadow: 0 2px 8px rgba(0,0,0,0.18);
+            --header-bg: #23243a;
+            --logo-fill: #1a847b;
+        }
         body {
-  align-items: center;
-  background-color: #15172b;
-  /*background-color: #000;*/
-  display: flex;
-  justify-content: center;
-  height: 100vh;
-}
+            background: var(--bg) !important;
+            color: var(--text);
+            min-height: 100vh;
+            padding: var(--spacing);
+            transition: background 0.3s, color 0.3s;
+        }
+        .container {
+            max-width: 800px;
+            margin: 32px auto;
+            background: var(--bg) !important;
+            border-radius: var(--border-radius);
+            transition: background 0.3s;
+            padding: calc(var(--spacing) * 1.5);
+        }
+        .header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--header-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 14px 22px 14px 18px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border);
+            transition: background 0.3s, color 0.3s;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .applitools-logo {
+            width: 32px;
+            height: 32px;
+            display: block;
+        }
+        .applitools-logo path,
+        .applitools-logo circle {
+            fill: var(--logo-fill);
+            transition: fill 0.3s;
+        }
+        .header-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 0.01em;
+        }
+        .theme-toggle {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 14px;
+            color: var(--text);
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .theme-toggle:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        .theme-toggle .icon {
+            font-size: 16px;
+        }
+        .subtitle {
+            font-size: 15px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: var(--spacing);
+        }
+        .card {
+            background: var(--card-bg) !important;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: var(--spacing);
+            margin-bottom: var(--spacing);
+            border: 1px solid var(--border);
+            transition: background 0.3s, color 0.3s;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
-.form {
-  background-color: #15172b;
-  border-radius: 20px;
-  box-sizing: border-box;
-  height: 500px;
-  padding: 20px;
-  width: 450px;
-}
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text);
+            padding: var(--spacing);
+            min-height: 100vh;
+        }
 
-.title {
-  color: #eee;
-  font-family: sans-serif;
-  font-size: 36px;
-  font-weight: 600;
-  margin-top: 30px;
-}
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: var(--bg-darker);
+            border-radius: var(--border-radius);
+            padding: calc(var(--spacing) * 1.5);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-.subtitle {
-  color: #eee;
-  font-family: sans-serif;
-  font-size: 20px;
-  font-weight: 600;
-  margin-top: 10px;
-  text-align: center;
-}
+        .header {
+            text-align: center;
+            margin-bottom: calc(var(--spacing) * 2);
+        }
 
-.input-container {
-  height: 50px;
-  position: relative;
-  width: 100%;
-}
+        .title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
 
-.ic1 {
-  margin-top: 40px;
-}
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
 
-.ic2 {
-  margin-top: 30px;
-}
+        .form-group {
+            margin-bottom: var(--spacing);
+        }
 
-.input {
-  background-color: #303245;
-  border-radius: 12px;
-  border: 0;
-  box-sizing: border-box;
-  color: #eee;
-  font-size: 18px;
-  height: 100%;
-  outline: 0;
-  padding: 4px 20px 0;
-  width: 100%;
-}
+        .input-wrapper {
+            position: relative;
+            margin-bottom: var(--spacing);
+        }
 
-.cut {
-  background-color: #15172b;
-  border-radius: 10px;
-  height: 20px;
-  left: 20px;
-  position: absolute;
-  top: -20px;
-  transform: translateY(0);
-  transition: transform 200ms;
-  /*width: 220px;*/
-}
+        .input {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: var(--border-radius);
+            color: var(--text);
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
 
-.cut-short {
-  width: 50px;
-}
+        .input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(0, 162, 152, 0.2);
+        }
 
-.input:focus ~ .cut,
-.input:not(:placeholder-shown) ~ .cut {
-  transform: translateY(8px);
-}
+        .input::placeholder {
+            color: var(--text-muted);
+        }
 
-.placeholder {
-  color: #65657b;
-  font-family: sans-serif;
-  left: 20px;
-  line-height: 14px;
-  pointer-events: none;
-  position: absolute;
-  transform-origin: 0 50%;
-  transition: transform 200ms, color 200ms;
-  top: 20px;
-}
+        .label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+        }
 
-.input:focus ~ .placeholder,
-.input:not(:placeholder-shown) ~ .placeholder {
-  transform: translateY(-30px) translateX(10px) scale(0.75);
-}
+        .help-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
 
-.input:not(:placeholder-shown) ~ .placeholder {
-  color: #808097;
-}
+        .select-wrapper {
+            position: relative;
+            margin-bottom: var(--spacing);
+        }
 
-.input:focus ~ .placeholder {
-  color: #dc2f55;
-}
+        .select {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: var(--border-radius);
+            color: var(--text);
+            font-size: 14px;
+            appearance: none;
+            cursor: pointer;
+        }
 
-.submit {
-  background-color: #00A298;
-  border-radius: 12px;
-  border: 0;
-  box-sizing: border-box;
-  color: #eee;
-  cursor: pointer;
-  font-size: 18px;
-  height: 50px;
-  margin: 10px;
-  text-align: center;
-  width: 120px;
-}
+        .select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(0, 162, 152, 0.2);
+        }
 
-.submit:active {
-  background-color: #006f68;
-}
+        .select-arrow {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--text-muted);
+        }
 
-a:link { 
-    color: white;
-    text-decoration: none; 
-}
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing);
+        }
 
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            margin-right: 12px;
+        }
 
-a:visited {  
-    color: white; 
-    text-decoration: none; 
-}
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
 
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--input-bg);
+            border: 1.5px solid var(--input-border);
+            transition: .4s;
+            border-radius: 24px;
+            box-sizing: border-box;
+        }
 
-a:hover {  
-    color: white; 
-    text-decoration: none; 
-}
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #605656;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+            transition: .4s;
+            border-radius: 50%;
+        }
 
+        body.dark-mode .toggle-slider:before {
+            background-color: #e2e2e2;
+        }
 
-a:active {  
-    color: white;
-    text-decoration: none; 
-}
- 
-/*the container must be positioned relative:*/
-.custom-select {
-  position: relative;
-  font-family: Arial;
-}
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+            border-color: var(--navy);
+        }
 
-.custom-select select {
-  display: none; /*hide original SELECT element:*/
-}
+        input:checked + .toggle-slider:before {
+            background-color: #fff;
+            transform: translate(18px, -50%);
+        }
 
-.select-selected {
-  background-color: #00A298;
-}
+        .toggle-label {
+            font-size: 14px;
+            color: var(--text);
+        }
 
-/*style the arrow inside the select element:*/
-.select-selected:after {
-  position: absolute;
-  content: "";
-  top: 14px;
-  right: 10px;
-  width: 0;
-  height: 0;
-  border: 6px solid transparent;
-  border-color: #fff transparent transparent transparent;
-}
+        .button-group {
+            display: flex;
+            gap: var(--spacing);
+            margin-top: calc(var(--spacing) * 2);
+        }
 
-/*point the arrow upwards when the select box is open (active):*/
-.select-selected.select-arrow-active:after {
-  border-color: transparent transparent #fff transparent;
-  top: 7px;
-}
+        .button {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
 
-/*style the items (options), including the selected item:*/
-.select-items div,.select-selected {
-  color: #ffffff;
-  padding: 8px 16px;
-  border: 1px solid transparent;
-  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
-  cursor: pointer;
-  user-select: none;
-}
+        .button-primary {
+            background-color: var(--primary);
+            color: white;
+        }
 
-/*style items (options):*/
-.select-items {
-  position: absolute;
-  background-color: #00A298;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 99;
-}
+        .button-primary:hover {
+            background-color: var(--primary-dark);
+        }
 
-/*hide the items when the select box is closed:*/
-.select-hide {
-  display: none;
-}
+        .button-secondary {
+            background-color: var(--input-bg);
+            color: var(--text);
+        }
 
-.select-items div:hover, .same-as-selected {
-  background-color: rgba(0, 0, 0, 0.1);
-}
+        .button-secondary:hover {
+            background-color: #363652;
+        }
 
+        .accordion {
+            width: 100%;
+            background-color: var(--input-bg);
+            color: var(--text);
+            cursor: pointer;
+            padding: 12px 16px;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing);
+            transition: all 0.2s ease;
+        }
 
-.terminal {
-  width:100%;
-  /*height:100%;*/
-  background-color:#303245;
-  color:white;
-  font-size:12px;
-}
+        .accordion:hover {
+            background-color: #1a847b50;
+        }
 
+        .accordion:after {
+            content: '+';
+            color: var(--text-muted);
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
 
+        .accordion.active:after {
+            content: '−';
+        }
 
+        .panel {
+            padding: 0 16px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: var(--bg-darker);
+            border-radius: var(--border-radius);
+        }
 
+        .panel.active {
+            max-height: 1000px;
+            padding: 30px;
+            margin-bottom: var(--spacing);
+        }
 
+        .terminal {
+            width: 100%;
+            background-color: var(--input-bg);
+            color: var(--text);
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            border: 1px solid #363652;
+            margin-top: var(--spacing);
+            display: none;
+        }
 
-.checkbox-switch input[type=checkbox] {
-  width: 0;
-  height: 0;
-  /*position: absolute;*/
-  top: -9999px;
-  right: -9999px;
-  overflow: hidden;
-}
+        .results {
+            margin-top: var(--spacing);
+            padding: var(--spacing);
+            background-color: var(--input-bg);
+            border-radius: var(--border-radius);
+            display: none;
+        }
 
-*, *:after, *:before {
-  box-sizing: border-box;
-}
+        .results a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
 
-.checkbox-switch {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  margin-bottom: 2.2652rem;
-}
-.checkbox-switch:after {
-  display: table;
-  clear: both;
-}
-.checkbox-switch .checkbox-right {
-  float: right;
-}
-.checkbox-switch legend {
-  margin: 0;
-  padding: 0;
-  display: block;
-  /*font-weight: 600;*/
-  font-size: 1rem;
-  line-height: 1.3rem;
-  margin-bottom: 1.618 rem;
-}
-.checkbox-switch legend.legend-left {
-  margin: 0 1.618rem 0 0;
-  float: left;
-  color: white;
-}
-.checkbox-switch input[type=checkbox] + label {
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  line-height: 1.3rem;
-}
-.checkbox-switch input[type=checkbox] + label:before {
-  width: 2.3rem;
-  height: 1.3rem;
-  font-family: Arial, sans-serif;
-  display: inline-block;
-  content: "•";
-  transition: all 0.2s ease;
-  text-align: left;
-  font-size: 2.25rem;
-  line-height: 1rem;
-  float: left;
-  overflow: hidden;
-  color: white;
-  border: 0.1949902505rem solid white;
-  border-radius: 0.65rem;
-  margin: auto 0;
-}
-@media screen and (min-width: 25rem) {
-  .checkbox-switch input[type=checkbox] + label:before {
-    margin-right: 0.5rem;
-  }
-}
-.checkbox-switch input[type=checkbox] + label:after {
-  display: none;
-}
-@media screen and (min-width: 25rem) {
-  .checkbox-switch input[type=checkbox] + label:after {
-    width: 1.75rem;
-    display: inline-block;
-  }
-}
-.checkbox-switch input[type=checkbox]:checked + label:before {
-  border-color: #00A298;
-  background: #00A298;
-  text-align: right;
-  color: white;
-}
-.checkbox-switch input[type=checkbox]:checked + label:after {
-}
-.checkbox-switch input[type=checkbox] + label:active:before, .checkbox-switch input[type=checkbox]:checked + label:active:before {
-  border-color: white;
-  background: white;
-  color: white;
-}
+        .results a:hover {
+            text-decoration: underline;
+        }
 
-:root {
-  font-size: 16px;
-  line-height: 1.618;
-  font-family: Open sans, sans-serif;
-  color: black;
-}
-@media screen and (min-width: 25rem) {
-  :root {
-    font-size: 18px;
-  }
-}
-
-fieldset {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  padding: 1rem;
-}
-fieldset legend {
-  margin: 0;
-  padding: 0;
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  font-weight: 300;
-  display: block;
-}
-
-a {
-  text-decoration: none;
-  font-weight: 500;
-  color: inherit;
-  transition: all 0.2s ease;
-}
-a:hover {
-  text-decoration: underline;
-  color: #00A298;
-}
-
-small.cretits {
-  margin-top: 2.617924 rem;
-  display: block;
-  font-size: 0.75rem;
-  display: block;
-  font-weight: 300;
-  color: rgba(0, 0, 0, 0.8);
-}
-
-/*
-.collapsible {
-  background-color: #eee;
-  color: #444;
-  cursor: pointer;
-  padding: 18px;
-  width: 100%;
-  border: none;
-  text-align: left;
-  outline: none;
-  font-size: 15px;
-}
-
-.active, .collapsible:hover {
-  background-color: #ccc;
-}*/
-
-button.accordion {
-    background-color: #303245;
-    color: white;
-    cursor: pointer;
-    padding: 18px;
-    width: 100%;
-    border: none;
-    text-align: left;
-    outline: none;
-    font-size: 15px;
-}
-
-button.accordion.active, button.accordion:hover {
-    background-color: #454863;
-}
-
-button.accordion:after {
-    content: '\002B';
-    color: white;
-    font-weight: bold;
-    float: right;
-    margin-left: 5px;
-}
-
-button.accordion.active:after {
-    content: "\2212";
-}
-
-/* Style the collapsible content. Note: hidden by default */
-.content {
-  padding: 0 18px;
-  display: none;
-  overflow: hidden;
-  background-color: #303245;
-}
-
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+            margin-left: 6px;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+        a.tooltip-container {
+            text-decoration: none;
+            color: inherit;
+        }
+        .info-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background: #e2e2e2;
+            color: #183153;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 12px;
+            line-height: 16px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .tooltip-container:hover .info-icon {
+            background: var(--primary);
+            color: #fff;
+        }
     </style>
-    <body style="margin: 0px; padding: 10px">
-         <div class="form">
-        <div class="subtitle">Figma Plugin for Applitools</div>
-       
-        <div class="input-container ic1">
-            <input id="key" class="input" type="text" placeholder=" " />
-            <div class="cut" style="width: 130px;"></div>
-            <label for="key" class="placeholder">Applitools API Key</label>
+    <body>
+        <div class="container">
+            <div class="header-bar">
+                <div class="header-left">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="47" height="64" viewBox="0 0 256 350"><path fill="#00A298" d="M195.725 174.716a238.4 238.4 0 0 1-5.124 49.174c-21.835-13.617-50.72-29.986-88.82-49.174c38.1-19.2 66.972-35.57 88.82-49.186a238.5 238.5 0 0 1 5.111 49.186M256 74.246V21.494a1023 1023 0 0 1-56.828 46.75C178.845 37.22 152.87 15.32 118.702 0c26.775 23.748 45.176 50.51 59.068 84.088C70.117 161.322 0 174.716 0 174.716s70.117 13.382 177.77 90.629c-13.892 33.59-32.28 60.327-59.069 84.075c34.168-15.321 60.144-37.221 80.471-68.243A1022 1022 0 0 1 256 327.939v-52.752s-6.448-10.747-37.3-32.66c7.864-21.114 12.189-43.958 12.189-67.81a194 194 0 0 0-12.189-67.811c30.852-21.927 37.3-32.66 37.3-32.66"/></svg>
+                    <span class="header-title">Applitools Figma</span>
+                </div>
+                <button class="theme-toggle" id="theme-toggle" title="Toggle light/dark mode">
+                    <span class="icon" id="theme-icon">🌙</span>
+                </button>
+            </div>
+            <div class="subtitle">Visual testing for your Figma designs</div>
+
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <label class="label" for="key">
+                        Applitools API Key
+                        <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
+                            <span class="info-icon">?</span>
+                        </a>
+                    </label>
+                    <input id="key" class="input" type="text" placeholder="Enter your API key" />
+                </div>
+
+                <div class="input-wrapper">
+                    <label class="label" for="url">
+                        Eyes Server URL
+                        <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
+                            <span class="info-icon">?</span>
+                        </a>
+                    </label>
+                    <input id="url" class="input" type="text" value="https://eyes.applitools.com" />
+                </div>
+            </div>
+
+            <button class="accordion">Additional Settings (Optional)</button>
+            <div class="panel">
+                <div class="input-wrapper">
+                    <label class="label" for="proxy">
+                        Proxy URL
+                        <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
+                            <span class="info-icon">    ?</span>
+                        </a>
+                    </label>
+                    <input id="proxy" class="input" type="text" placeholder="http://username:password@proxy.example.com:8080" />
+                </div>
+
+                <div class="input-wrapper">
+                    <label class="label" for="matchLevel">
+                        Match Level
+                        <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
+                            <span class="info-icon">?</span>
+                        </a>
+                    </label>
+                    <div class="select-wrapper">
+                        <select id="matchLevel" class="select">
+                            <option value="">Default</option>
+                            <option value="Strict">Strict</option>
+                            <option value="Content">Content</option>
+                            <option value="Layout">Layout</option>
+                            <option value="Exact">Exact</option>
+                        </select>
+                        <span class="select-arrow">▼</span>
+                    </div>
+                </div>
+
+                <div class="input-wrapper">
+                    <label class="label" for="contrastLevel">
+                        Contrast Level
+                        <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
+                            <span class="info-icon">?</span>
+                        </a>
+                    </label>
+                    <div class="select-wrapper">
+                        <select id="contrastLevel" class="select">
+                            <option value="">None</option>
+                            <option value="AA 2_0">AA 2.0</option>
+                            <option value="AA 2_1">AA 2.1</option>
+                            <option value="AAA 2_0">AAA 2.0</option>
+                            <option value="AAA 2_1">AAA 2.1</option>
+                        </select>
+                        <span class="select-arrow">▼</span>
+                    </div>
+                </div>
+
+                <div class="toggle-group">
+                    <label class="toggle">
+                        <input type="checkbox" id="everything">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">Include Components</span>
+                </div>
+
+                <div class="toggle-group">
+                    <label class="toggle">
+                        <input type="checkbox" id="saveFailedTests">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">Auto Accept Baselines</span>
+                </div>
+
+                <div class="toggle-group">
+                    <label class="toggle">
+                        <input type="checkbox" id="ignoreDisplacements">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">Ignore Displacements</span>
+                </div>
+
+                <div class="toggle-group">
+                    <label class="toggle">
+                        <input type="checkbox" id="setNotifyOnCompletion">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">Notify On Completion</span>
+                </div>
+
+                <div class="input-wrapper">
+                    <label class="label" for="os">
+                        OS Name Override
+                        <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
+                            <span class="info-icon">?</span>
+                        </a>
+                    </label>
+                    <input id="os" class="input" type="text" value="figma-plugin" />
+                </div>
+
+                <div class="input-wrapper">
+                    <label class="label" for="browser">
+                        Browser Name Override
+                        <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
+                            <span class="info-icon">?</span>
+                        </a>
+                    </label>
+                    <input id="browser" class="input" type="text" value="figma-plugin" />
+                </div>
+
+                <div class="input-wrapper">
+                    <label class="label" for="widths">
+                        Additional Widths
+                        <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
+                            <span class="info-icon">?</span>
+                        </a>
+                    </label>
+                    <input id="widths" class="input" type="text" placeholder="e.g. 800,1200" />
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button id="save" class="button button-primary">Export</button>
+                <button id="cancel" class="button button-secondary">Cancel</button>
+            </div>
+
+            <textarea id="console" class="terminal" rows="10" disabled></textarea>
+
+            <div id="results-section" class="results">
+                <a id="results-url" href="" target="_blank">View Screenshots</a>
+                <button id="opendashboard" class="button button-primary" style="margin-top: 12px;">Open Applitools</button>
+            </div>
+
+            <button id="baseline-list-section" class="accordion" style="display: none;">Developer Configuration</button>
+            <div class="panel">
+                <p style="margin-bottom: 12px;">For Design vs Production comparison, please share the following information with your developers:</p>
+                <ul id="baseline-list" style="list-style-type: none; font-size: 12px; padding: 12px; background-color: var(--input-bg); border-radius: var(--border-radius);">
+                </ul>
+            </div>
         </div>
 
-        <div class="input-container ic1">
-            <!-- <input id="url" class="input" value="https://eyes.applitools.com" type="text" placeholder=" " /> -->
-            <input id="url" class="input" value="https://eyes.applitools.com" type="text" />
-            <div class="cut" style="width: 130px;"></div>
-            <label for="url" class="placeholder">Eyes Server URL</label>
-        </div>
-
-        <div>&nbsp;</div>
-
-        <!-- <a href="#" id="advanced"><span id="hideShow">More Settings</a> -->
-        <button type="button" id="additional_settings" class="accordion">Additional Settings</button>
-
-        <div class="content" id="advanced-section" style="background-color: #15172b; width: 100%">
-
-            <div class="input-container ic1">
-                <input id="proxy" class="input" type="text" placeholder=" " />
-                <div class="cut" style="width: 90px;"></div>
-                <label for="proxy" class="placeholder">Proxy URL</label>
-            </div>
-
-            <div>&nbsp;</div>
-
-            <div class="custom-select">
-                <select id="matchLevel">
-                    <option value="" >Select Match Level</option>
-                    <option value="Strict" >Strict</option>
-                    <option value="Content" >Content</option>
-                    <option value="Layout" >Layout</option>
-                    <option value="Exact" >Exact</option>
-                </select>
-            </div>
-
-            <div>&nbsp;</div>
-
-            <div class="custom-select">
-                <select id="contrastLevel">
-                    <option value="" >Select Contrast Level</option>
-                    <option value="AA 2_0" >AA 2_0</option>
-                    <option value="AA 2_1" >AA 2_1</option>
-                    <option value="AAA 2_0" >AAA 2_0</option>
-                    <option value="AAA 2_1" >AAA 2_1</option>
-                </select>
-            </div>
- 
-            <div>&nbsp;</div>
-
-            <fieldset class="checkbox-switch">
-                <legend class="legend-left">Include Components</legend>
-                <input type="checkbox" id="everything"> 
-                <label for="everything" title="Include Components" class="checkbox-right"></label>
-            </fieldset>
-
-            <fieldset class="checkbox-switch">
-                <legend class="legend-left">Auto Accept Baselines</legend>
-                <input type="checkbox" id="saveFailedTests"> 
-                <label for="saveFailedTests" title="Auto Accept Baselines" class="checkbox-right"></label>
-            </fieldset>
-
-            <fieldset class="checkbox-switch">
-              <legend class="legend-left">Ignore Displacements</legend>
-              <input type="checkbox" id="ignoreDisplacements"> 
-              <label for="ignoreDisplacements" title="Ignore Displacements" class="checkbox-right"></label>
-            </fieldset>
-
-            <fieldset class="checkbox-switch">
-              <legend class="legend-left">Notify On Completion</legend>
-              <input type="checkbox" id="setNotifyOnCompletion"> 
-              <label for="setNotifyOnCompletion" title="Notify On Completion" class="checkbox-right"></label>
-            </fieldset>
-
-            <div class="subtitle">Experimental Options</div>
-           
-            <div class="input-container ic1">
-                <input id="os" class="input" value="figma-plugin" type="text" placeholder=" " />
-                <div class="cut" style="width: 135px;"></div>
-                <label for="os" class="placeholder">OS Name Override</label>
-            </div>
-
-            <div class="input-container ic1">
-                <input id="browser" class="input" value="figma-plugin" type="text" placeholder=" " />
-                <div class="cut" style="width: 165px;"></div>
-                <label for="browser" class="placeholder">Browser Name Override</label>
-            </div>
-
-            <div class="input-container ic1">
-                <input id="widths" class="input" type="text" placeholder=" " />
-                <div class="cut" style="width: 220px;"></div>
-                <label for="widths" class="placeholder">Additional Widths (e.g. 800,1200)</label>
-            </div>
-        </div>
-        <ul style="list-style: none; display: flex; align-items: center; justify-content: center;margin-top: 10px;">
-            <li style="margin: auto"><button id="save" class='submit'>Export</button></li>
-            <li style="margin: auto"><button id="cancel" class='submit'>Cancel</button></li>
-        </ul>
-
-
-        <textarea rows=10 class="terminal" id="console" style="display:  none; border: solid 1px rgb(0, 0, 0); width: 100%; max-width: 100%; resize: none; overflow-y: scroll;;padding-top: 10px" disabled></textarea>
-                
-        <div id="results-section" style="color: white; display:none;padding-top: 10px;">
-            <!-- <label for="results-url">Results:</label> -->
-            <a id="results-url" href="" target="_blank">See Screenshots</a>
-            <button style="width: 200px;" id="opendashboard" class='submit' onclick="">Open Applitools</button>
-        </div>
-
-        <button id="baseline-list-section" type="button" class="accordion" style="display:none;">Developer Configuration</button>
-
-        <div class="content" style="color:  white; padding-top: 10px;">
-            For Design vs Production comparison, please share the following information with your developers:
-            <ul id="baseline-list" style="list-style-type:none;font-size: 12px;padding-left: 10px; border: solid 1px rgb(255, 255, 255)">
-            </ul>
-        </div>
-
-        <div>&nbsp;</div>
-
-       <!-- 
-        <div id="baseline-list-section" style="color:  white; display:none;padding-top: 10px;">
-            For implemention to design comparison, please share the details below with your developer(s):
-            <ul id="baseline-list" style="list-style-type:none;font-size: 12px;padding-left: 10px; border: solid 1px rgb(255, 255, 255)">
-            </ul>
-        </div> 
-    -->
-    </form>
-
-    <script>
-    var coll = document.getElementById("additional_settings");
-    var i;
-
-      coll.addEventListener("click", function() {
-        this.classList.toggle("active");
-        var content = this.nextElementSibling;
-        if (content.style.display === "block") {
-          content.style.display = "none";
-        } else {
-          content.style.display = "block";
-        }
-      });
-
-    var coll2 = document.getElementById("baseline-list-section");
-
-      coll2.addEventListener("click", function() {
-        this.classList.toggle("active");
-        var content = this.nextElementSibling;
-        if (content.style.display === "block") {
-          content.style.display = "none";
-        } else {
-          content.style.display = "block";
-          window.scrollBy(0,500);
-        }
-      });
-    </script>
-
-        <script src="https://cdn.jsdelivr.net/gh/thomas-lowry/figma-plugin-ds/dist/iife/figma-plugin-ds.js"></script>
         <script>
+            // Accordion functionality
+            document.querySelectorAll('.accordion').forEach(button => {
+                button.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const panel = this.nextElementSibling;
+                    panel.classList.toggle('active');
+                });
+            });
 
+            // Console logging
             (function() {
-                var cors_api_host = 'infinite-dawn-90208.herokuapp.com';
-                var cors_api_url = 'https://' + cors_api_host + '/';
-                var slice = [].slice;
-                var origin = window.location.protocol + '//' + window.location.host;
-                var open = XMLHttpRequest.prototype.open;
-                XMLHttpRequest.prototype.open = function() {
-                    var args = slice.call(arguments);
-                    var targetOrigin = /^https?:\/\/([^\/]+)/i.exec(args[1]);
-                    if (targetOrigin && targetOrigin[0].toLowerCase() !== origin &&
-                        targetOrigin[1] !== cors_api_host) {
-                        args[1] = cors_api_url + args[1];
-                    }
-                    return open.apply(this, args);
-                };
-            })();
-
-            (function () {
                 if (!console) {
                     console = {};
                 }
                 var old = console.log;
                 var logger = document.getElementById('console');
-                console.log = function (message) {
+                console.log = function(message) {
                     if (typeof message == 'object') {
-                        logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : String(message) + '\n');
+                        logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : String(message)) + '\n';
                     } else {
                         logger.innerHTML += message + '\n';
                     }
+                    logger.scrollTop = logger.scrollHeight;
                 }
             })();
 
-            //initialize all select menus
-            selectMenu.init();
-            //uninitialize all select menus
-            //selectMenu.destroy('matchLevel');
-            
-            // Have console scroll to bottom if we add more print output...
-            // var textarea = document.getElementById('console');
-            // textarea.scrollTop = textarea.scrollHeight;
-
-            // Add spinner logic later..
-            // function spinner() {
-            //     document.getElementsByClassName("icon icon--spinner icon--spin")[0].style.display = "block";
-            // }
-
+            // Theme toggle logic
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeLabel = document.getElementById('theme-label');
+            function setTheme(mode) {
+                if (mode === 'dark') {
+                    document.body.classList.add('dark-mode');
+                    themeIcon.textContent = '☀️';
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    themeIcon.textContent = '🌙';
+                }
+                localStorage.setItem('applitools-theme', mode);
+            }
+            themeToggle.addEventListener('click', () => {
+                const isDark = document.body.classList.contains('dark-mode');
+                setTheme(isDark ? 'light' : 'dark');
+            });
+            // On load, set theme from localStorage
+            (function() {
+                const saved = localStorage.getItem('applitools-theme');
+                if (saved === 'dark') setTheme('dark');
+                else setTheme('light');
+            })();
         </script>
 
-        <script>
-var x, i, j, l, ll, selElmnt, a, b, c;
-/*look for any elements with the class "custom-select":*/
-x = document.getElementsByClassName("custom-select");
-l = x.length;
-for (i = 0; i < l; i++) {
-  selElmnt = x[i].getElementsByTagName("select")[0];
-  ll = selElmnt.length;
-  /*for each element, create a new DIV that will act as the selected item:*/
-  a = document.createElement("DIV");
-  a.setAttribute("class", "select-selected");
-  a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
-  x[i].appendChild(a);
-  /*for each element, create a new DIV that will contain the option list:*/
-  b = document.createElement("DIV");
-  b.setAttribute("class", "select-items select-hide");
-  for (j = 1; j < ll; j++) {
-    /*for each option in the original select element,
-    create a new DIV that will act as an option item:*/
-    c = document.createElement("DIV");
-    c.innerHTML = selElmnt.options[j].innerHTML;
-    c.addEventListener("click", function(e) {
-        /*when an item is clicked, update the original select box,
-        and the selected item:*/
-        var y, i, k, s, h, sl, yl;
-        s = this.parentNode.parentNode.getElementsByTagName("select")[0];
-        sl = s.length;
-        h = this.parentNode.previousSibling;
-        for (i = 0; i < sl; i++) {
-          if (s.options[i].innerHTML == this.innerHTML) {
-            s.selectedIndex = i;
-            h.innerHTML = this.innerHTML;
-            y = this.parentNode.getElementsByClassName("same-as-selected");
-            yl = y.length;
-            for (k = 0; k < yl; k++) {
-              y[k].removeAttribute("class");
-            }
-            this.setAttribute("class", "same-as-selected");
-            break;
-          }
-        }
-        h.click();
-    });
-    b.appendChild(c);
-  }
-  x[i].appendChild(b);
-  a.addEventListener("click", function(e) {
-      /*when the select box is clicked, close any other select boxes,
-      and open/close the current select box:*/
-      e.stopPropagation();
-      closeAllSelect(this);
-      this.nextSibling.classList.toggle("select-hide");
-      this.classList.toggle("select-arrow-active");
-    });
-}
-function closeAllSelect(elmnt) {
-  /*a function that will close all select boxes in the document,
-  except the current select box:*/
-  var x, y, i, xl, yl, arrNo = [];
-  x = document.getElementsByClassName("select-items");
-  y = document.getElementsByClassName("select-selected");
-  xl = x.length;
-  yl = y.length;
-  for (i = 0; i < yl; i++) {
-    if (elmnt == y[i]) {
-      arrNo.push(i)
-    } else {
-      y[i].classList.remove("select-arrow-active");
-    }
-  }
-  for (i = 0; i < xl; i++) {
-    if (arrNo.indexOf(i)) {
-      x[i].classList.add("select-hide");
-    }
-  }
-}
-/*if the user clicks anywhere outside the select box,
-then close all select boxes:*/
-document.addEventListener("click", closeAllSelect);
-</script>
+<script src="https://cdn.jsdelivr.net/gh/thomas-lowry/figma-plugin-ds/dist/iife/figma-plugin-ds.js"></script>
+<script>
 
+    (function() {
+        var cors_api_host = 'infinite-dawn-90208.herokuapp.com';
+        var cors_api_url = 'https://' + cors_api_host + '/';
+        var slice = [].slice;
+        var origin = window.location.protocol + '//' + window.location.host;
+        var open = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function() {
+            var args = slice.call(arguments);
+            var targetOrigin = /^https?:\/\/([^\/]+)/i.exec(args[1]);
+            if (targetOrigin && targetOrigin[0].toLowerCase() !== origin &&
+                targetOrigin[1] !== cors_api_host) {
+                args[1] = cors_api_url + args[1];
+            }
+            return open.apply(this, args);
+        };
+    })();
+
+    (function () {
+        if (!console) {
+            console = {};
+        }
+        var old = console.log;
+        var logger = document.getElementById('console');
+        console.log = function (message) {
+            if (typeof message == 'object') {
+                logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : String(message) + '\n');
+            } else {
+                logger.innerHTML += message + '\n';
+            }
+        }
+    })();
+
+    //initialize all select menus
+    selectMenu.init();
+    //uninitialize all select menus
+    //selectMenu.destroy('matchLevel');
+    
+    // Have console scroll to bottom if we add more print output...
+    // var textarea = document.getElementById('console');
+    // textarea.scrollTop = textarea.scrollHeight;
+
+    // Add spinner logic later..
+    // function spinner() {
+    //     document.getElementsByClassName("icon icon--spinner icon--spin")[0].style.display = "block";
+    // }
+
+</script>
     </body>
 </html>
