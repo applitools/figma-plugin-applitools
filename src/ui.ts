@@ -63,6 +63,10 @@ onmessage = async event => {
     (<HTMLInputElement>document.getElementById('key')).value = message.applitoolsApiKey
   }
 
+  if (message.serverUrl) {
+    (<HTMLInputElement>document.getElementById('url')).value = message.serverUrl
+  }
+
   if (message.dupResults && message.dupResults.designs.length) {
     console.log("duplicates found: " + message.dupResults.designs.length);
     console.log("Frame names must be unique for each resolution/viewport.");
@@ -95,6 +99,7 @@ onmessage = async event => {
             viewportSize: test._hostDisplaySize.toString(),
             hostApp: test._hostApp,
             hostOS: test._hostOS,
+            baselineEnvName: test._serverConnector._configuration._baselineEnvName,
             status: test._status,
           };
         });
@@ -216,6 +221,8 @@ async function upload(results, baselineList, projectName) {
     await results.designs.map(async (design) => {
       let testResults;
       let testName = `${design.name}`
+      let width;
+      let height;
 
       const eyes = new Eyes()
 
@@ -229,7 +236,10 @@ async function upload(results, baselineList, projectName) {
           eyes.setProxy(proxyUrl);
         }
 
-        let baselineEnvName = `${testName}_${design.width}`;
+        width = Math.round(Number(design.width));
+        height = Math.round(Number(design.height));
+
+        let baselineEnvName = `${testName}_${width}`;
         eyes.setBaselineEnvName(`${baselineEnvName}`);
 
         const os = (<HTMLInputElement>document.getElementById('os')).value;
@@ -239,7 +249,7 @@ async function upload(results, baselineList, projectName) {
         eyes.setHostOS(os)
 
         baselineList.push(`Test Name: ${testName}<br>Baseline Environment Name: ${baselineEnvName}`);
-        await eyes.open(projectName, testName, { width: design.width, height: design.height });
+        await eyes.open(projectName, testName, { width: width, height: height });
         await eyes.check(testName, Target.image(Buffer.from(design.bytes)));
 
         testResults = await eyes.close(false);

@@ -14,14 +14,7 @@ figma.ui.onmessage = async (msg) => {
       figma.notify("Getting Designs")
       await figma.clientStorage.setAsync('applitoolsApiKey', msg.applitoolsApiKey);
       await figma.clientStorage.setAsync('serverUrl', msg.serverUrl);
-      // View messenger data
-      // for (const key in msg) {
-      //   if (msg.hasOwnProperty(key)) {
-      //     console.log(msg[key]);
-      //   }
-      // }
-
-      getDesigns(msg.everything, msg.arrWidths)
+      await getDesigns(msg.everything, msg.arrWidths)
       break
     case 'CANCEL':
       figma.closePlugin()
@@ -104,12 +97,6 @@ async function getDesigns(everything=false, arrWidths) {
   figma.ui.postMessage({ results, dupResults })
 }
 
-async function sendServerUrlToUI() {
-  const serverUrl = await figma.clientStorage.getAsync('serverUrl');
-  //console.log('Storage serverUrl: ' + serverUrl)
-  figma.ui.postMessage({ serverUrl });
-}
-
 switch(figma.command) {
   case "settings":
     figma.showUI(__html__);
@@ -117,10 +104,11 @@ switch(figma.command) {
     (async () => {
       try {
         let applitoolsApiKey = await figma.clientStorage.getAsync('applitoolsApiKey')
+        let serverUrl = await figma.clientStorage.getAsync('serverUrl');
         figma.ui.postMessage({applitoolsApiKey});
-        await sendServerUrlToUI();
+        figma.ui.postMessage({serverUrl});
       } catch (e) {
-          // Deal with the fact the chain failed
+          console.log(e);
       }
     })();
 

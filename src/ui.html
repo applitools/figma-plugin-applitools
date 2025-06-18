@@ -423,34 +423,48 @@
         .results a:hover {
             text-decoration: underline;
         }
-
+        
         .tooltip-container {
-            position: relative;
-            display: inline-block;
-            margin-left: 6px;
-            cursor: pointer;
-            vertical-align: middle;
+          position: relative;
+          display: inline-block;
+          cursor: pointer;
+          margin-left: 6px;
         }
-        a.tooltip-container {
-            text-decoration: none;
-            color: inherit;
-        }
+
         .info-icon {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            background: #e2e2e2;
-            color: #183153;
-            border-radius: 50%;
-            text-align: center;
-            font-size: 12px;
-            line-height: 16px;
-            font-weight: bold;
-            transition: background 0.2s;
+          display: inline-block;
+          width: 16px;
+          height: 16px;
+          background: #e2e2e2;
+          color: #183153;
+          border-radius: 50%;
+          text-align: center;
+          font-size: 12px;
+          line-height: 16px;
+          font-weight: bold;
+          transition: background 0.2s;
         }
-        .tooltip-container:hover .info-icon {
-            background: var(--primary);
-            color: #fff;
+
+        .tooltip-text {
+          visibility: hidden;
+          width: 220px;
+          background-color: #333;
+          color: #fff;
+          text-align: left;
+          border-radius: 4px;
+          padding: 8px;
+          position: absolute;
+          z-index: 1;
+          bottom: 125%; 
+          left: 50%;
+          transform: translateX(-50%);
+          opacity: 0;
+          transition: opacity 0.2s;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+          visibility: visible;
+          opacity: 1;
         }
     </style>
     <body>
@@ -470,7 +484,7 @@
                 <div class="input-wrapper">
                     <label class="label" for="key">
                         Applitools API Key
-                        <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
+                        <a href="https://applitools.com/tutorials/getting-started/retrieve-api-key" target="_blank" class="tooltip-container">
                             <span class="info-icon">?</span>
                         </a>
                     </label>
@@ -480,9 +494,10 @@
                 <div class="input-wrapper">
                     <label class="label" for="url">
                         Eyes Server URL
-                        <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
-                            <span class="info-icon">?</span>
-                        </a>
+                        <span class="tooltip-container">
+                          <span class="info-icon">?</span>
+                        <span class="tooltip-text">This is the URL of your Applitools Eyes server (e.g. https://eyes.applitools.com).</span>
+                      </span>
                     </label>
                     <input id="url" class="input" type="text" value="https://eyes.applitools.com" />
                 </div>
@@ -493,9 +508,9 @@
                 <div class="input-wrapper">
                     <label class="label" for="proxy">
                         Proxy URL
-                        <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
+                        <!-- <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
                             <span class="info-icon">    ?</span>
-                        </a>
+                        </a> -->
                     </label>
                     <input id="proxy" class="input" type="text" placeholder="http://username:password@proxy.example.com:8080" />
                 </div>
@@ -503,7 +518,7 @@
                 <div class="input-wrapper">
                     <label class="label" for="matchLevel">
                         Match Level
-                        <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
+                        <a href="https://applitools.com/tutorials/concepts/best-practices/match-levels" target="_blank" class="tooltip-container">
                             <span class="info-icon">?</span>
                         </a>
                     </label>
@@ -522,7 +537,7 @@
                 <div class="input-wrapper">
                     <label class="label" for="contrastLevel">
                         Contrast Level
-                        <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
+                        <a href="https://applitools.com/tutorials/concepts/test-execution/accessibility-testing" target="_blank" class="tooltip-container">
                             <span class="info-icon">?</span>
                         </a>
                     </label>
@@ -573,7 +588,7 @@
                 <div class="input-wrapper">
                     <label class="label" for="os">
                         OS Name Override
-                        <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
+                        <a href="https://help.applitools.com/hc/en-us/articles/360007189271-Overriding-OS-and-hosting-applications-parameters" target="_blank" class="tooltip-container">
                             <span class="info-icon">?</span>
                         </a>
                     </label>
@@ -583,7 +598,7 @@
                 <div class="input-wrapper">
                     <label class="label" for="browser">
                         Browser Name Override
-                        <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
+                        <a href="https://help.applitools.com/hc/en-us/articles/360007189271-Overriding-OS-and-hosting-applications-parameters" target="_blank" class="tooltip-container">
                             <span class="info-icon">?</span>
                         </a>
                     </label>
@@ -593,9 +608,9 @@
                 <div class="input-wrapper">
                     <label class="label" for="widths">
                         Additional Widths
-                        <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
+                        <!-- <a href="https://applitools.com/docs/placeholder" target="_blank" class="tooltip-container">
                             <span class="info-icon">?</span>
-                        </a>
+                        </a> -->
                     </label>
                     <input id="widths" class="input" type="text" placeholder="e.g. 800,1200" />
                 </div>
