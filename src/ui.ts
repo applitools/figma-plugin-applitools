@@ -239,8 +239,10 @@ async function upload(results, baselineList, projectName) {
         width = Math.round(Number(design.width));
         height = Math.round(Number(design.height));
 
-        let baselineEnvName = `${testName}_${width}`;
-        eyes.setBaselineEnvName(`${baselineEnvName}`);
+        const userInput = (document.getElementById('baselineEnv') as HTMLInputElement)?.value?.trim();
+        const baselineEnvName = userInput ? userInput : `${testName}_${width}`;
+
+        eyes.setBaselineEnvName(baselineEnvName);
 
         const os = (<HTMLInputElement>document.getElementById('os')).value;
         const browser = (<HTMLInputElement>document.getElementById('browser')).value;
